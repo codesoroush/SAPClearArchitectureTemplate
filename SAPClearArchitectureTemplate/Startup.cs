@@ -28,6 +28,7 @@ namespace SAPClearArchitectureTemplate
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddInfraStructure();
             services.AddTodoDI(Configuration, Environment);
         }
 
