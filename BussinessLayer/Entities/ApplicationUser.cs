@@ -11,6 +11,8 @@ namespace BussinessLayer.Entities
         public string FullName { get; set; }
         public DateTime  RegisterDate { get; set; } = DateTime.Now;
         public DateTime LastOnlineDate { get; set; } = DateTime.Now;
-        public DateTime? LastPasswordResetDate { get; set; } 
+        public DateTime? LastPasswordResetDate { get; set; }
+
+        public virtual List<TodoList> Todoes { get; set; }
     }
 }

@@ -10,7 +10,8 @@ namespace DataAccessLayer.Context
     public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
 
-
+        public DbSet<TodoItem> TodoItems { get; set; }
+        public DbSet<TodoList> Todoes { get; set; }
 
 
 
