@@ -1,0 +1,5 @@
+﻿service
+depency injection
+helpers
+extention methods
+automapper

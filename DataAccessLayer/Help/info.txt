@@ -1,0 +1,5 @@
+﻿dbcontext
+repositories
+uow
+migrations
+orm
