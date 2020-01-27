@@ -31,7 +31,7 @@ namespace DataLayer.Uow
 
         public async Task CommitAsync()
         {
-            await _context.SaveChangesAsync();
+            var resutlt = await _context.SaveChangesAsync();
         }
 
         public void Dispose()

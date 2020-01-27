@@ -20,6 +20,8 @@ using ServiceLayer.DepencyInjection;
 using DataLayer.Context;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using ServiceLayer.Conenctions;
+using Microsoft.AspNetCore.Http;
+
 
 namespace BlazorWorkManagerSample
 {
@@ -64,6 +66,8 @@ namespace BlazorWorkManagerSample
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ApplicationUser>>();
             services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

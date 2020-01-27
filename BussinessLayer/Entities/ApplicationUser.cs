@@ -14,5 +14,7 @@ namespace BussinessLayer.Entities
         public DateTime? LastPasswordResetDate { get; set; }
 
         public virtual List<TodoList> Todoes { get; set; }
+        public virtual List<Absence> Absences { get; set; }
+
     }
 }

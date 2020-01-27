@@ -1,0 +1,271 @@
+﻿@page "/todo"
+@inject ITodoService TodoService
+@inject IHttpContextAccessor httpContextAccessor
+@using BussinessLayer.Entities
+@using BussinessLayer.ExtentionMethods
+
+    <SAPAlertBox @ref="Alert1"
+                 AlertBoxSize="SAPAlertBoxSize.Small"
+                 SAPAlertType="@SAPAlertType.None"
+                 AnimationType="@AnimateBook.ZoomEntrances.ZoomIn.Fast()"
+                 FooterText="@todoItem.LastModified.ToSAPFormat()"
+                 Title="@todoItem.Title">
+
+        <div class="form-group">
+            <label>
+                Note:
+            </label>
+            <textarea @bind="todoItem.Note" class="form-control"></textarea>
+
+        </div>
+
+
+
+        <div class="form-group">
+            <label>
+                Piority:
+            </label>
+            <select @bind="@todoItem.Priority" class="form-control">
+                @foreach (var item in Enum.GetValues(typeof(BussinessLayer.Enums.PriorityLevel)))
+                {
+                    <option>@item</option>
+                }
+            </select>
+        </div>
+        <button @onclick="() => DeleteSubTask(todoItem)" class="btn btn-default text-danger float-left">Delete</button>
+        <button @onclick="() => UpdateSubTask(todoItem)" class="btn btn-primary float-right">Update</button>
+
+
+    </SAPAlertBox>
+
+    <div class="row">
+
+        @if (selectedTodo == null)
+        {
+        <div class="col-md-12">
+
+
+
+
+            <div class="form-group">
+                <input @bind="todoList.Title" class="form-control" placeholder="todo list name" />
+                <small id="emailHelp" class="form-text text-danger">@ErrorText.</small>
+
+            </div>
+            <div class="form-group">
+
+                <input type="color" @bind="todoList.Color" />
+                <label @onclick="() => todoList.GenerateColor()"><i class="oi oi-loop-circular"></i>     </label>
+
+            </div>
+            <div class="form-group">
+
+                <button @onclick="CreateTodo" class="btn btn-primary">
+                    Create
+                </button>
+
+            </div>
+            <hr />
+
+            <ul class="list-group mb-2">
+
+                @foreach (var item in todoes.OrderByDescending(o => o.Created))
+                {
+                    <li @onclick="() => selectedTodo = item" class="list-group-item @ActiveClass(item)" style="cursor:pointer;margin:4px 0;border-left:40px solid @item.Color">
+                        @item.Title
+                        <label class="badge badge-light float-right">
+                            @item.TodoItems.Count(c => c.Done) | @item.TodoItems.Count
+                        </label>
+
+                    </li>
+                }
+            </ul>
+        </div>
+        }
+
+        else
+        {
+
+            <div class="col-md-12">
+
+                <button @onclick="() => selectedTodo = null" class="btn btn-outline-warning">
+                    Back
+                </button>
+                <button @onclick="DeleteTask" class="btn btn-default text-danger float-right">
+                    Delete
+                </button>
+            </div>
+
+
+            <div class="col-md-12">
+
+
+
+                <h4>
+                    <input @bind="selectedTodo.Title" @onfocusout="SaveTodoList" class="form-control" />
+                </h4>
+
+                <ul class="list-group mb-2">
+                    @foreach (var todo in selectedTodo.TodoItems)
+                    {
+                        <li class="list-group-item">
+                            <button @onclick="() => ShowDetail(todo)" class="btn btn-default float-right">
+                                <i class="oi oi-ellipses"></i>
+
+                            </button>
+
+                            <div class="form-group" style="display:flex;">
+                                <div>
+                                    <input type="checkbox" style="margin:auto 5px;" value="@todo.Done" checked="@todo.Done" @onchange="(e) => CheckBoxChange(e,todo)" />
+
+                                </div>
+                                @if (todo.Focoused)
+                                {
+                                    <input value="@todo.Title" @onfocusout="() => todo.Focoused = false" class="form-control" @onchange="(e) => InputChange(e,todo)" />
+
+                                }
+                                else
+                                {
+
+                                    var txtDecoration = todo.Done ? "line-through" : "unset";
+
+                                    <div style="text-decoration:@txtDecoration" @onclick="() => todo.Focoused = true">@todo.Title</div>
+                                    <i @onclick="() => todo.Focoused = true" style="margin: auto 5px" class="oi oi-pencil"></i>
+
+
+                                }
+
+                            </div>
+
+                        </li>
+                    }
+                    <li class="list-group-item">
+                        <button @onclick="AddTodo" class="btn btn-default">
+                            Add Item ...
+
+                        </button>
+                    </li>
+
+                </ul>
+
+
+            </div>
+        }
+    </div>
+
+@code {
+
+    public SAPAlertBox Alert1;
+
+
+    public string ErrorText { get; set; }
+
+    string userId = "";
+    List<TodoList> todoes = new List<TodoList>();
+    private TodoList todoList = new TodoList() { };
+    private TodoItem todoItem = new TodoItem();
+    private TodoList selectedTodo;
+
+    void DeleteTask()
+    {
+        TodoService.DeleteTask(selectedTodo);
+        todoes.Remove(selectedTodo);
+        selectedTodo = null;
+        StateHasChanged();
+    }
+    void UpdateSubTask(TodoItem item)
+    {
+
+        Alert1.HideAlert();
+        item.LastModified = DateTime.Now;
+        SaveTodoList();
+
+    }
+    void DeleteSubTask(TodoItem item)
+    {
+        selectedTodo.TodoItems.Remove(item);
+        SaveTodoList();
+        Alert1.HideAlert();
+        todoItem = new TodoItem();
+        StateHasChanged();
+    }
+
+    void InputChange(ChangeEventArgs e, TodoItem todoItem)
+
+    {
+        todoItem.Title = e.Value.ToString();
+        todoItem.LastModified = DateTime.Now;
+        StateHasChanged();
+        TodoService.Update(selectedTodo);
+
+    }
+
+    void ShowDetail(TodoItem item)
+    {
+        todoItem = item;
+        Alert1.ShowAlert();
+    }
+
+    void CheckBoxChange(ChangeEventArgs e, TodoItem todoItem)
+
+    {
+
+        todoItem.Done = Convert.ToBoolean(e.Value.ToString());
+        todoItem.LastModified = DateTime.Now;
+        StateHasChanged();
+        TodoService.Update(selectedTodo);
+
+    }
+    string ActiveClass(TodoList item)
+    {
+        return item == selectedTodo ? "active" : "";
+    }
+
+    async void SaveTodoList()
+    {
+        await TodoService.Update(selectedTodo);
+
+    }
+    void AddTodo()
+    {
+        selectedTodo.TodoItems.Add(new TodoItem());
+    }
+    //void KeyUp(KeyboardEventArgs e)
+    //{
+    //    if (e.Key == "Enter")
+    //    {
+    //    TodoService.Update(selectedTodo);
+
+    //    }
+    //}
+    async void CreateTodo()
+    {
+        if (string.IsNullOrEmpty(todoList.Title))
+        {
+
+            ErrorText = "name should not be empty.";
+        }
+        else
+        {
+            todoList.ApplicationUserId = userId;
+            var result = await TodoService.CreateTodo(todoList);
+            todoes.Add(result);
+            todoList = new TodoList() { ApplicationUserId = userId };
+            ErrorText = "";
+            StateHasChanged();
+        }
+
+    }
+
+    protected override void OnInitialized()
+    {
+
+        userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+
+        todoes = TodoService.GetAllTodoes(userId);
+        base.OnInitialized();
+    }
+
+
+}

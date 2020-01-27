@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BussinessLayer", "BussinessLayer\BussinessLayer.csproj", "{305DFF28-23D9-499F-9BE0-06B2C11C7566}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\DataLayer.csproj", "{8D574A66-21BF-4C67-91C1-4513E2D542F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "DataLayer\DataLayer.csproj", "{8D574A66-21BF-4C67-91C1-4513E2D542F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceLayer", "ServiceLayer\ServiceLayer.csproj", "{E9411B05-9C31-420F-A6A0-65DB9B5E84FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceLayer", "ServiceLayer\ServiceLayer.csproj", "{E9411B05-9C31-420F-A6A0-65DB9B5E84FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWorkManagerSample", "BlazorWorkManagerSample\BlazorWorkManagerSample.csproj", "{25A11C0C-AB68-4C9C-A5D6-63E019E6DD01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWorkManagerSample", "BlazorWorkManagerSample\BlazorWorkManagerSample.csproj", "{25A11C0C-AB68-4C9C-A5D6-63E019E6DD01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

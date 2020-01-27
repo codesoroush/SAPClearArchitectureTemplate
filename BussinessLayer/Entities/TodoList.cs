@@ -14,11 +14,14 @@ namespace BussinessLayer.Entities
 
         public string Color { get; set; } = SAPGenerator.GenerateHexColorCode;
 
-        public virtual List<TodoItem> TodoItems { get; set; }
-
+        public virtual List<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
+        public void GenerateColor()
+        {
+            this.Color = SAPGenerator.GenerateHexColorCode; 
+        }
 
         #region Entity Relations
-        public int ApplicationUserId { get; set; }
+        public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         #endregion
     }

@@ -1,6 +1,7 @@
 ﻿using BussinessLayer.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace BussinessLayer.Entities
@@ -20,6 +21,9 @@ namespace BussinessLayer.Entities
         public DateTime? Reminder { get; set; }
 
         public PriorityLevel Priority { get; set; }
+
+        [NotMapped]
+        public virtual bool Focoused { get; set; } = false;
 
 
         #region Entity Relations
