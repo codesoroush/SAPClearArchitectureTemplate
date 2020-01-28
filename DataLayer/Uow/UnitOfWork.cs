@@ -1,5 +1,6 @@
 ﻿using BussinessLayer.Entities;
 using DataLayer.Context;
+using DataLayer.Repositories.DedicatedRepository.AbsenceRep;
 using DataLayer.Repositories.DedicatedRepository.Todo;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace DataLayer.Uow
     {
         private ApplicationDbContext _context;
         public TodoListItemRepository TodoList { get; }
+        public AbsenceRepository AbsenceGate { get; }
         public TodoItemRepository TodoItem { get; }
 
         public UnitOfWork(ApplicationDbContext context)
@@ -19,6 +21,7 @@ namespace DataLayer.Uow
             _context = context;
             TodoItem = new TodoItemRepository(context);
             TodoList = new TodoListItemRepository(context);
+            AbsenceGate = new AbsenceRepository(context);
 
 
         }

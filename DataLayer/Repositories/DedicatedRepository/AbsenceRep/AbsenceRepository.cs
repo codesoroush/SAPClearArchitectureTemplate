@@ -1,9 +1,11 @@
 ﻿using BussinessLayer.Entities;
 using DataLayer.Context;
 using DataLayer.Repositories.GenericRepository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DataLayer.Repositories.DedicatedRepository.AbsenceRep
 {
@@ -13,7 +15,15 @@ namespace DataLayer.Repositories.DedicatedRepository.AbsenceRep
 
         public AbsenceRepository(ApplicationDbContext context) : base(context)
         {
+            _context = context;
 
+        }
+
+
+        public async Task<Absence> GetTodayAbsence(string userId)
+        {
+            var result = await _context.Absences.FirstOrDefaultAsync(f => f.Entry.Date == DateTime.Now.Date && f.ApplicationUserId == userId);
+            return result;
         }
     }
 }

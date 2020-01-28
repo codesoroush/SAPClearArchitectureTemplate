@@ -8,7 +8,7 @@ namespace BussinessLayer.Entities
     public class Absence:BaseEntity
     {
         public int Id { get; set; }
-        public DateTime? Entry { get; set; }
+        public DateTime Entry { get; set; } = DateTime.Now;
         public DateTime? Exit { get; set; }
         public string Description { get; set; }
         public string AdminDescription { get; set; }
@@ -19,7 +19,7 @@ namespace BussinessLayer.Entities
 
 
         #region Relations
-        public int ApplicationUserId { get; set; }
+        public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         #endregion
     }
