@@ -7,6 +7,32 @@
 @using BussinessLayer.ViewModels.LookupIpApi
 @using Newtonsoft.Json;
 
+<SAPAlertBox 
+       AlertBoxSize="SAPAlertBoxSize.Small"
+       @ref="Alert1"       
+       SAPAlertType="SAPAlertType.Danger"
+       Title="OPS , your country is not correct"      >
+
+
+    <p>note : for your work enter , country must be iran</p>
+    <p>if you have VPN on your system , turn off vpn and try again</p>
+
+</SAPAlertBox>
+
+
+<SAPAlertBox AlertBoxSize="SAPAlertBoxSize.Small"
+             @ref="Alert2"
+             PreventUserToCloseAlert="true"
+             SAPAlertType="SAPAlertType.Info"
+             Title="Please wait...">
+
+
+    <p>
+        please wait untill ip data calculate end.
+    </p>
+
+</SAPAlertBox>
+
 
 <div class="row">
     <div class="col-md-6">
@@ -43,32 +69,65 @@
 
         </ul>
     </div>
-    <div class="col-md-6">
-        <ul class="list-group">
-            @if (IpLookupResponse != null)
-            {
-                <li class="list-group-item">
-                    Country : @IpLookupResponse.country | @IpLookupResponse.country_name
-                </li>
-                <li class="list-group-item">
-                    IP : @IpLookupResponse.ip
-                </li>
-                <li class="list-group-item">
-                    ORG : @IpLookupResponse.org
-                </li>
-                <li class="list-group-item">
-                    Latitude : @IpLookupResponse.latitude
-                </li>
-                <li class="list-group-item">
-                    Longitude : @IpLookupResponse.longitude
-                </li>
-            }
+    @if (Absence == null)
+    {
+        <div class="col-md-6">
+            <ul class="list-group">
+                @if (IpLookupResponse != null)
+                {
+                    <li class="list-group-item">
+                        Country : @IpLookupResponse.country | @IpLookupResponse.country_name
+                    </li>
+                    <li class="list-group-item">
+                        IP : @IpLookupResponse.ip
+                    </li>
+                    <li class="list-group-item">
+                        ORG : @IpLookupResponse.org
+                    </li>
+                    <li class="list-group-item">
+                        Latitude : @IpLookupResponse.latitude
+                    </li>
+                    <li class="list-group-item">
+                        Longitude : @IpLookupResponse.longitude
+                    </li>
+                    if (IpLookupResponse.country_name != "Iran")
+                    {
+                        <li class="list-group-item">
+                            Country is not correct : <button @onclick="RecheckIP" class="btn btn-danger">
+                                Recheck
+                            </button>
+                        </li>
+                    }
+                }
 
-            <li class="list-group-item">
-                Status :
-            </li>
-        </ul>
-    </div>
+
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-6">
+            <ul class="list-group">
+               
+                    <li class="list-group-item">
+                        Country : @Absence.EnterInfo.Country
+                    </li>
+                    <li class="list-group-item">
+                        IP : @Absence.EnterInfo.IP
+                    </li>
+                    <li class="list-group-item">
+                        ORG : @Absence.EnterInfo.Organization
+                    </li>
+                    <li class="list-group-item">
+                        Latitude : @Absence.EnterInfo.Latitude
+                    </li>
+                    <li class="list-group-item">
+                        Longitude : @Absence.EnterInfo.Longitude
+                    </li>
+       
+            </ul>
+        </div>
+    }
 
 
 </div>
@@ -77,22 +136,33 @@
     <div class="col-md-auto">
         @if (Absence == null)
         {
-         
 
-            <div class="form-group" style="display:flex;">
-                <div>
-                    <select class="form-control" @bind="WorkPlace">
-                        @foreach (var item in Enum.GetValues(typeof(BussinessLayer.Enums.WorkPlace)))
-                        {
-                            <option>@item</option>
-                        }
-                    </select>
-                </div>
-             
+            if (IpLookupResponse != null)
+            {
+                if (IpLookupResponse.country_name == "Iran")
+                {
+                    <div class="form-group" style="display:flex;">
+                        <div>
+                            <select class="form-control" @bind="WorkPlace">
+                                @foreach (var item in Enum.GetValues(typeof(BussinessLayer.Enums.WorkPlace)))
+                                {
+                                    <option>@item</option>
+                                }
+                            </select>
+                        </div>
 
-            </div>
 
-            <button @onclick="WorkEnter" class="btn btn-primary">  Enter Work </button>
+                    </div>
+
+                    <button @onclick="WorkEnter" class="btn btn-primary">  Enter Work </button>
+                }
+
+            }
+            else
+            {
+                <p> Please wait ... </p>
+            }
+
 
         }
         else if (Absence.Exit.HasValue)
@@ -124,11 +194,13 @@
 @code {
 
     private System.Timers.Timer AbsenceTimer;
+    private SAPAlertBox Alert1;
+    private SAPAlertBox Alert2;
 
     public DateTime TodayDate => DateTime.Now;
     public Absence Absence { get; set; }
     public string TimerText { get; set; }
-    public IpLookupResponse IpLookupResponse { get; set; }
+    public IpLookupResponse IpLookupResponse { get; set; } = null;
     public string StatusText { get; set; }
     string userId = "";
     public string RemainValidTime => $"{Absence.Exit.Value.AddMinutes(5).Subtract(TodayDate).Minutes}:{Absence.Exit.Value.AddMinutes(5).Subtract(TodayDate).Seconds}";
@@ -137,6 +209,24 @@
     {
         var min = Absence.Exit.Value.Subtract(Absence.Entry).TotalMinutes;
         return $"{Convert.ToInt32(min / 60)}:{Convert.ToInt32(min % 60)}";
+    }
+    async void RecheckIP()
+    {
+
+        try
+        {
+            Alert2.ShowAlert();
+            var result = await JsRuntime.InvokeAsync<object>("httpGet", "https://ipapi.co/json/");
+            IpLookupResponse = JsonConvert.DeserializeObject<IpLookupResponse>(result.ToString());
+            Alert2.HideAlert();
+
+        }
+        catch (Exception e)
+        {
+            Alert2.HideAlert();
+
+            Console.WriteLine(e.Message);
+        }
     }
     async void CancelExit()
     {
@@ -147,6 +237,13 @@
     }
     async void WorkEnter()
     {
+
+        if (IpLookupResponse.country_name != "Iran")
+        {
+            Alert1.ShowAlert();
+            return;
+        }
+
         var abs = new Absence
         {
             Entry = DateTime.Now,
@@ -154,7 +251,16 @@
             AbsenceMode = BussinessLayer.Enums.AbsenceMode.Normal,
             Created = DateTime.Now,
             LastModified = DateTime.Now,
-            ApplicationUserId = userId
+            ApplicationUserId = userId,
+            EnterInfo= new EnterInfo
+            {
+                Country = IpLookupResponse.country_name,
+                UserAgent = "",
+                IP = IpLookupResponse.ip,
+                Latitude = IpLookupResponse.latitude,
+                Longitude = IpLookupResponse.longitude,
+                Organization = IpLookupResponse.org
+            }
         };
         var result = await AbsenceeService.EnterWork(abs);
         Absence = result;
@@ -184,10 +290,15 @@
 
             if (firstRender)
             {
-                var result = await JsRuntime.InvokeAsync<object>("httpGet", "https://ipapi.co/json/");
-            IpLookupResponse = JsonConvert.DeserializeObject<IpLookupResponse>(result.ToString());
+
+                if (Absence == null)
+                {
+           var result = await JsRuntime.InvokeAsync<object>("httpGet", "https://ipapi.co/json/");
+                IpLookupResponse = JsonConvert.DeserializeObject<IpLookupResponse>(result.ToString());
+                }
+     
             }
-            
+
 
 
         }

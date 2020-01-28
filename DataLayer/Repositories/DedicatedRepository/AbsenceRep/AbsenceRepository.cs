@@ -22,7 +22,7 @@ namespace DataLayer.Repositories.DedicatedRepository.AbsenceRep
 
         public async Task<Absence> GetTodayAbsence(string userId)
         {
-            var result = await _context.Absences.FirstOrDefaultAsync(f => f.Entry.Date == DateTime.Now.Date && f.ApplicationUserId == userId);
+            var result = await _context.Absences.Include(i => i.EnterInfo).FirstOrDefaultAsync(f => f.Entry.Date == DateTime.Now.Date && f.ApplicationUserId == userId);
             return result;
         }
     }

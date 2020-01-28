@@ -16,7 +16,7 @@ namespace BussinessLayer.Entities
         public WorkPlace WorkPlace { get; set; }
 
         public virtual List<DailyLeaves> DailyLeaves { get; set; }
-
+        public EnterInfo EnterInfo { get; set; }
 
         #region Relations
         public string ApplicationUserId { get; set; }
