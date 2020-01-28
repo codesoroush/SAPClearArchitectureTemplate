@@ -2,6 +2,7 @@
 using DataLayer.Context;
 using DataLayer.Repositories.DedicatedRepository.AbsenceRep;
 using DataLayer.Repositories.DedicatedRepository.Todo;
+using DataLayer.Repositories.DedicatedRepository.UserRep;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,6 +15,7 @@ namespace DataLayer.Uow
         private ApplicationDbContext _context;
         public TodoListItemRepository TodoList { get; }
         public AbsenceRepository AbsenceGate { get; }
+        public UserRepository User { get; }
         public TodoItemRepository TodoItem { get; }
 
         public UnitOfWork(ApplicationDbContext context)
@@ -22,6 +24,7 @@ namespace DataLayer.Uow
             TodoItem = new TodoItemRepository(context);
             TodoList = new TodoListItemRepository(context);
             AbsenceGate = new AbsenceRepository(context);
+            User = new UserRepository(context);
 
 
         }

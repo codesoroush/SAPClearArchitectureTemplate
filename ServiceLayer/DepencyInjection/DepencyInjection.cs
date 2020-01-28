@@ -1,5 +1,6 @@
 ﻿using DataLayer.Repositories.DedicatedRepository.AbsenceRep;
 using DataLayer.Repositories.DedicatedRepository.Todo;
+using DataLayer.Repositories.DedicatedRepository.UserRep;
 using DataLayer.Repositories.GenericRepository;
 using DataLayer.Uow;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,12 +34,14 @@ namespace ServiceLayer.DepencyInjection
             //services
             services.AddTransient<ITodoService, TodoService>();
             services.AddTransient<IAbsenceService, AbsenceService>();
+            services.AddTransient<IUserService, UserService>();
 
 
             //repository
             services.AddTransient<ITodoItemRepository, TodoItemRepository>();
             services.AddTransient<ITodoListItemRepository, TodoListItemRepository>();
             services.AddTransient<IAbsenceRepository, AbsenceRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
 
             return services;

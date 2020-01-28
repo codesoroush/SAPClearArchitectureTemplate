@@ -19,7 +19,10 @@ namespace BussinessLayer.Entities
         public bool Done { get; set; }
 
         public DateTime? Reminder { get; set; }
+        public DateTime? DoneDate { get; set; }
 
+        public TodoProgress TodoProgress { get; set; } = TodoProgress.Created;
+        public int Point { get; set; } = 0;
         public PriorityLevel Priority { get; set; }
 
         [NotMapped]
@@ -29,6 +32,7 @@ namespace BussinessLayer.Entities
         #region Entity Relations
         public int TodoListId { get; set; }
         public TodoList TodoList { get; set; }
+
 
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿using BussinessLayer.ExtentionMethods;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace BussinessLayer.Entities
@@ -20,9 +21,14 @@ namespace BussinessLayer.Entities
             this.Color = SAPGenerator.GenerateHexColorCode; 
         }
 
+        public bool Assigned{ get; set; } = false;
+
+
+
         #region Entity Relations
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
+
         #endregion
     }
 }

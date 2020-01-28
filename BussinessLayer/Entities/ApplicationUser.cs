@@ -12,7 +12,8 @@ namespace BussinessLayer.Entities
         public DateTime  RegisterDate { get; set; } = DateTime.Now;
         public DateTime LastOnlineDate { get; set; } = DateTime.Now;
         public DateTime? LastPasswordResetDate { get; set; }
-
+        public string ConnectionId { get; set; }
+        public string Avatar { get; set; }
         public virtual List<TodoList> Todoes { get; set; }
         public virtual List<Absence> Absences { get; set; }
 

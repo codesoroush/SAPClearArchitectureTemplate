@@ -4,14 +4,16 @@ using DataLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200128134238_init9")]
+    partial class init9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -221,6 +223,9 @@ namespace DataLayer.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AssignedUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -245,9 +250,6 @@ namespace DataLayer.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Point")
-                        .HasColumnType("int");
-
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
@@ -265,6 +267,8 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AssignedUserId");
+
                     b.HasIndex("TodoListId");
 
                     b.ToTable("TodoItems");
@@ -279,9 +283,6 @@ namespace DataLayer.Migrations
 
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("Assigned")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Color")
                         .HasColumnType("nvarchar(max)");
@@ -466,6 +467,10 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("BussinessLayer.Entities.TodoItem", b =>
                 {
+                    b.HasOne("BussinessLayer.Entities.ApplicationUser", "AssignedUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedUserId");
+
                     b.HasOne("BussinessLayer.Entities.TodoList", "TodoList")
                         .WithMany("TodoItems")
                         .HasForeignKey("TodoListId")
