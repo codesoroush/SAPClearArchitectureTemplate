@@ -4,44 +4,44 @@
 @using BussinessLayer.Entities
 @using BussinessLayer.ExtentionMethods
 
-    <SAPAlertBox @ref="Alert1"
-                 AlertBoxSize="SAPAlertBoxSize.Small"
-                 SAPAlertType="@SAPAlertType.None"
-                 AnimationType="@AnimateBook.ZoomEntrances.ZoomIn.Fast()"
-                 FooterText="@todoItem.LastModified.ToSAPFormat()"
-                 Title="@todoItem.Title">
+<SAPAlertBox @ref="Alert1"
+             AlertBoxSize="SAPAlertBoxSize.Small"
+             SAPAlertType="@SAPAlertType.None"
+             AnimationType="@AnimateBook.ZoomEntrances.ZoomIn.Fast()"
+             FooterText="@todoItem.LastModified.ToSAPFormat()"
+             Title="@todoItem.Title">
 
-        <div class="form-group">
-            <label>
-                Note:
-            </label>
-            <textarea @bind="todoItem.Note" class="form-control"></textarea>
+    <div class="form-group">
+        <label>
+            Note:
+        </label>
+        <textarea @bind="todoItem.Note" class="form-control"></textarea>
 
-        </div>
-
-
-
-        <div class="form-group">
-            <label>
-                Piority:
-            </label>
-            <select @bind="@todoItem.Priority" class="form-control">
-                @foreach (var item in Enum.GetValues(typeof(BussinessLayer.Enums.PriorityLevel)))
-                {
-                    <option>@item</option>
-                }
-            </select>
-        </div>
-        <button @onclick="() => DeleteSubTask(todoItem)" class="btn btn-default text-danger float-left">Delete</button>
-        <button @onclick="() => UpdateSubTask(todoItem)" class="btn btn-primary float-right">Update</button>
+    </div>
 
 
-    </SAPAlertBox>
 
-    <div class="row">
+    <div class="form-group">
+        <label>
+            Piority:
+        </label>
+        <select @bind="@todoItem.Priority" class="form-control">
+            @foreach (var item in Enum.GetValues(typeof(BussinessLayer.Enums.PriorityLevel)))
+            {
+                <option>@item</option>
+            }
+        </select>
+    </div>
+    <button @onclick="() => DeleteSubTask(todoItem)" class="btn btn-default text-danger float-left">Delete</button>
+    <button @onclick="() => UpdateSubTask(todoItem)" class="btn btn-primary float-right">Update</button>
 
-        @if (selectedTodo == null)
-        {
+
+</SAPAlertBox>
+
+
+@if (selectedTodo == null)
+{<div class="row">
+
         <div class="col-md-12">
 
 
@@ -81,81 +81,86 @@
                 }
             </ul>
         </div>
-        }
-
-        else
-        {
-
-            <div class="col-md-12">
-
-                <button @onclick="() => selectedTodo = null" class="btn btn-outline-warning">
-                    Back
-                </button>
-                <button @onclick="DeleteTask" class="btn btn-default text-danger float-right">
-                    Delete
-                </button>
-            </div>
-
-
-            <div class="col-md-12">
-
-
-
-                <h4>
-                    <input @bind="selectedTodo.Title" @onfocusout="SaveTodoList" class="form-control" />
-                </h4>
-
-                <ul class="list-group mb-2">
-                    @foreach (var todo in selectedTodo.TodoItems)
-                    {
-                        <li class="list-group-item">
-                            <button @onclick="() => ShowDetail(todo)" class="btn btn-default float-right">
-                                <i class="oi oi-ellipses"></i>
-
-                            </button>
-
-                            <div class="form-group" style="display:flex;">
-                                <div>
-                                    <input type="checkbox" style="margin:auto 5px;" value="@todo.Done" checked="@todo.Done" @onchange="(e) => CheckBoxChange(e,todo)" />
-
-                                </div>
-                                @if (todo.Focoused)
-                                {
-                                    <input value="@todo.Title" @onfocusout="() => todo.Focoused = false" class="form-control" @onchange="(e) => InputChange(e,todo)" />
-
-                                }
-                                else
-                                {
-
-                                    var txtDecoration = todo.Done ? "line-through" : "unset";
-
-                                    <div style="text-decoration:@txtDecoration" @onclick="() => todo.Focoused = true">@todo.Title</div>
-                                    <i @onclick="() => todo.Focoused = true" style="margin: auto 5px" class="oi oi-pencil"></i>
-
-
-                                }
-
-                            </div>
-
-                        </li>
-                    }
-                    <li class="list-group-item">
-                        <button @onclick="AddTodo" class="btn btn-default">
-                            Add Item ...
-
-                        </button>
-                    </li>
-
-                </ul>
-
-
-            </div>
-        }
     </div>
 
-@code {
+}
 
-    public SAPAlertBox Alert1;
+else
+{
+<div class="row">
+    <div class="col-md-12">
+
+        <button @onclick="() => selectedTodo = null" class="btn btn-outline-warning">
+            Back
+        </button>
+        <button @onclick="DeleteTask" class="btn btn-default text-danger float-right">
+            Delete
+        </button>
+    </div>
+
+</div>
+<hr />
+<div class="row">
+
+    <div class="col-md-12">
+
+
+
+        <h4>
+            <input @bind="selectedTodo.Title" @onfocusout="SaveTodoList" class="form-control" />
+        </h4>
+
+        <ul class="list-group mb-2">
+            @foreach (var todo in selectedTodo.TodoItems)
+            {
+                <li class="list-group-item">
+                    <button @onclick="() => ShowDetail(todo)" class="btn btn-default float-right">
+                        <i class="oi oi-ellipses"></i>
+
+                    </button>
+
+                    <div class="form-group" style="display:flex;">
+                        <div>
+                            <input type="checkbox" style="margin:auto 5px;" value="@todo.Done" checked="@todo.Done" @onchange="(e) => CheckBoxChange(e,todo)" />
+
+                        </div>
+                        @if (todo.Focoused)
+                        {
+                            <input value="@todo.Title" @onfocusout="() => todo.Focoused = false" class="form-control" @onchange="(e) => InputChange(e,todo)" />
+
+                        }
+                        else
+                        {
+
+                            var txtDecoration = todo.Done ? "line-through" : "unset";
+
+                            <div style="text-decoration:@txtDecoration" @onclick="() => todo.Focoused = true">@todo.Title</div>
+                            <i @onclick="() => todo.Focoused = true" style="margin: auto 5px" class="oi oi-pencil"></i>
+
+
+                        }
+
+                    </div>
+
+                </li>
+            }
+            <li class="list-group-item">
+                <button @onclick="AddTodo" class="btn btn-default">
+                    Add Item ...
+
+                </button>
+            </li>
+
+        </ul>
+
+
+    </div>
+    </div>
+    }
+
+    @code {
+
+public SAPAlertBox Alert1;
 
 
     public string ErrorText { get; set; }
@@ -268,4 +273,4 @@
     }
 
 
-}
+    }
