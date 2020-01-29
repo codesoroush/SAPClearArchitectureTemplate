@@ -20,30 +20,39 @@
              AnimationType="@AnimateBook.ZoomEntrances.ZoomIn.Fast()"
              FooterText="@todoItem.LastModified.ToSAPFormat()"
              Title="@todoItem.Title">
+    <div class="text-left">
+        <div class="form-group">
+            <label>
+                Note:
+            </label>
+            <textarea @bind="todoItem.Note" class="form-control"></textarea>
 
-    <div class="form-group">
-        <label>
-            Note:
-        </label>
-        <textarea @bind="todoItem.Note" class="form-control"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>
+                Due Date :
+            </label>
+            <input class="form-control" type="date" @bind="todoItem.DueDate" />
+            <small class="text-muted"> Today date is : @DateTime.Now.ToString("yyyy-MM-dd")</small>
+        </div>
+
+        <div class="form-group">
+            <label>
+                Piority:
+            </label>
+            <select @bind="@todoItem.Priority" class="form-control">
+                @foreach (var item in Enum.GetValues(typeof(BussinessLayer.Enums.PriorityLevel)))
+                {
+                    <option>@item</option>
+                }
+            </select>
+        </div>
+        <button @onclick="() => DeleteSubTask(todoItem)" class="btn btn-default text-danger float-left">Delete</button>
+        <button @onclick="() => UpdateSubTask(todoItem)" class="btn btn-primary float-right">Update</button>
+
 
     </div>
-
-
-
-    <div class="form-group">
-        <label>
-            Piority:
-        </label>
-        <select @bind="@todoItem.Priority" class="form-control">
-            @foreach (var item in Enum.GetValues(typeof(BussinessLayer.Enums.PriorityLevel)))
-            {
-                <option>@item</option>
-            }
-        </select>
-    </div>
-    <button @onclick="() => DeleteSubTask(todoItem)" class="btn btn-default text-danger float-left">Delete</button>
-    <button @onclick="() => UpdateSubTask(todoItem)" class="btn btn-primary float-right">Update</button>
 
 
 </SAPAlertBox>
@@ -53,14 +62,16 @@
              AnimationType="@AnimateBook.ZoomEntrances.ZoomIn.Faster()"
              Title="Create a todo">
     <div class="form-group text-left">
-        <input @bind="todoList.Title" class="form-control" placeholder="todo list name" />
-        <small id="emailHelp" class="form-text text-danger">@ErrorText.</small>
+        <label> Write a name for todo</label>
+        <input @bind="todoList.Title" class="form-control" placeholder="Todo name" />
+        <small id="emailHelp" class="form-text text-danger">@ErrorText</small>
 
     </div>
+    
+
     <div class="form-group text-left">
 
-        <input type="color" @bind="todoList.Color" />
-        <label @onclick="() => todoList.GenerateColor()"><i class="oi oi-loop-circular"></i>     </label>
+        <input class="form-control" type="color" @bind="todoList.Color" />
 
     </div>
 
@@ -211,7 +222,6 @@ else
     public SAPAlertBox Alert3;
     public string AssignUserId { get; set; }
     public string ErrorText { get; set; }
-
     string userId = "";
     List<TodoList> todoes = new List<TodoList>();
     List<ApplicationUser> otherUsers = new List<ApplicationUser>();

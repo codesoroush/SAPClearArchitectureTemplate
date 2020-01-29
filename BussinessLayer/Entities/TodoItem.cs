@@ -20,7 +20,7 @@ namespace BussinessLayer.Entities
 
         public DateTime? Reminder { get; set; }
         public DateTime? DoneDate { get; set; }
-
+        public DateTime? DueDate { get; set; } = DateTime.Now.Hour > 10 ? DateTime.Now.AddDays(1) : DateTime.Now;
         public TodoProgress TodoProgress { get; set; } = TodoProgress.Created;
         public int Point { get; set; } = 0;
         public PriorityLevel Priority { get; set; }
