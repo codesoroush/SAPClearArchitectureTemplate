@@ -163,7 +163,7 @@ else
 
 
             <h4>
-                <input @bind="selectedTodo.Title" @onfocusout="SaveTodoList" class="form-control" />
+                <input @bind="selectedTodo.Title" @onfocusout="() => SaveTodoList()" class="form-control" />
             </h4>
 
             <ul class="list-group mb-2">
@@ -236,13 +236,13 @@ else
         todoes.Remove(selectedTodo);
         selectedTodo = null;
         StateHasChanged();
-                           ToastArea.CreateToast
-            ( new SAPToast { 
-            AlertType = SAPAlertType.Info,
-            Title = "Todo Deleted",
-            AutoCloseDelay = TimeSpan.FromSeconds(3),
-            ShowProgressbar= true
-            });
+        ToastArea.CreateToast
+( new SAPToast {
+    AlertType = SAPAlertType.Info,
+    Title = "Todo Deleted",
+    AutoCloseDelay = TimeSpan.FromSeconds(3),
+    ShowProgressbar= true
+});
     }
     void UpdateSubTask(TodoItem item)
     {
@@ -250,13 +250,13 @@ else
         Alert1.HideAlert();
         item.LastModified = DateTime.Now;
         SaveTodoList();
-                               ToastArea.CreateToast
-            ( new SAPToast { 
-            AlertType = SAPAlertType.Success,
-            Title = "Todo Updated",
-            AutoCloseDelay = TimeSpan.FromSeconds(3),
-            ShowProgressbar= true
-            });
+        ToastArea.CreateToast
+( new SAPToast {
+    AlertType = SAPAlertType.Success,
+    Title = "Todo Updated",
+    AutoCloseDelay = TimeSpan.FromSeconds(3),
+    ShowProgressbar= true
+});
 
     }
     void DeleteSubTask(TodoItem item)
@@ -267,14 +267,14 @@ else
         todoItem = new TodoItem();
         StateHasChanged();
 
-        
-                   ToastArea.CreateToast
-            ( new SAPToast { 
-            AlertType = SAPAlertType.Info,
-            Title = "SubTodo Deleted",
-            AutoCloseDelay = TimeSpan.FromSeconds(3),
-            ShowProgressbar= true
-            });
+
+        ToastArea.CreateToast
+ ( new SAPToast {
+     AlertType = SAPAlertType.Info,
+     Title = "SubTodo Deleted",
+     AutoCloseDelay = TimeSpan.FromSeconds(3),
+     ShowProgressbar= true
+ });
     }
 
     void InputChange(ChangeEventArgs e, TodoItem todoItem)
@@ -299,6 +299,17 @@ else
 
         todoItem.Done = Convert.ToBoolean(e.Value.ToString());
         todoItem.LastModified = DateTime.Now;
+        if (todoItem.Done)
+        {
+            todoItem.DoneDate = DateTime.Now;
+
+        }
+        else
+        {
+            todoItem.DoneDate = null;
+
+        }
+
         StateHasChanged();
         TodoService.Update(selectedTodo);
 
@@ -308,8 +319,16 @@ else
         return item == selectedTodo ? "active" : "";
     }
 
-    async void SaveTodoList()
+    async void SaveTodoList(bool? assign = false)
     {
+        if (assign.HasValue && assign.Value)
+        {
+     foreach (var item in selectedTodo.TodoItems)
+        {
+            item.ApplicationUserId = selectedTodo.ApplicationUserId;
+        }
+        }
+   
         await TodoService.Update(selectedTodo);
 
     }
@@ -317,22 +336,22 @@ else
     {
         selectedTodo.ApplicationUserId = AssignUserId;
         selectedTodo.Assigned = true;
-        SaveTodoList();
+        SaveTodoList(true);
         todoes.Remove(selectedTodo);
         selectedTodo = null;
         StateHasChanged();
         Alert2.HideAlert();
         ToastArea.CreateToast
-            ( new SAPToast { 
-            AlertType = SAPAlertType.Success,
-            Title = "Todo assigned",
-            AutoCloseDelay = TimeSpan.FromSeconds(3),
-            ShowProgressbar= true
+            ( new SAPToast {
+                AlertType = SAPAlertType.Success,
+                Title = "Todo assigned",
+                AutoCloseDelay = TimeSpan.FromSeconds(3),
+                ShowProgressbar= true
             });
     }
     void AddTodo()
     {
-        selectedTodo.TodoItems.Add(new TodoItem());
+        selectedTodo.TodoItems.Add(new TodoItem {  ApplicationUserId = userId});
     }
     //void KeyUp(KeyboardEventArgs e)
     //{
@@ -363,13 +382,13 @@ else
             Alert3.HideAlert();
             StateHasChanged();
 
-                   ToastArea.CreateToast
-            ( new SAPToast { 
-            AlertType = SAPAlertType.Success,
-            Title = "Todo created",
-            AutoCloseDelay = TimeSpan.FromSeconds(3),
-            ShowProgressbar= true
-            });
+            ToastArea.CreateToast
+     ( new SAPToast {
+         AlertType = SAPAlertType.Success,
+         Title = "Todo created",
+         AutoCloseDelay = TimeSpan.FromSeconds(3),
+         ShowProgressbar= true
+     });
         }
 
     }

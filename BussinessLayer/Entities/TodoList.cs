@@ -18,7 +18,7 @@ namespace BussinessLayer.Entities
         public virtual List<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
         public void GenerateColor()
         {
-            this.Color = SAPGenerator.GenerateHexColorCode; 
+            Color = SAPGenerator.GenerateHexColorCode; 
         }
 
         public bool Assigned{ get; set; } = false;

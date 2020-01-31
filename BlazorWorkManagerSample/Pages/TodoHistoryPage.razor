@@ -1,11 +1,23 @@
 ﻿@page "/todohistory"
+@inject ITodoService TodoService
+@inject IHttpContextAccessor httpContextAccessor
 <div>
-
+    @for (int i = 0; i < 7; i++)
+    {
+        <p>@i</p>
+    }
 </div>
 
 
 @code {
     public DateTime TodayDate { get; set; } = DateTime.Now;
 
+    public string userId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        TodoService.GetAllTodoItemsnLastDays(userId,7);
+    }
 
 }

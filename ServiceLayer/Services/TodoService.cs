@@ -2,6 +2,7 @@
 using DataLayer.Uow;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,10 +36,24 @@ namespace ServiceLayer.Services
             return _uow.TodoList.GetAllWithTodoesChilds(userId);
         }
 
+        public List<TodoItem> GetAllTodoItemsnLastDays(string userId, int dayCount)
+        {
+            var todoItems = _uow.TodoList.GetAllTodoItemsInLastDays(userId,dayCount);
+
+            // No need to sort sites first
+            var grouped = todoItems.OrderBy(x => x.DueDate)
+                               .Where(w => w.DoneDate.HasValue ).GroupBy(x => x.DoneDate.Value.Date);
+
+            return todoItems;
+
+        }
+
         public async Task Update(TodoList todo)
         {
+          
+         
              _uow.TodoList.Update(todo);
              await _uow.CommitAsync();
         }
     }
-}
+} 
