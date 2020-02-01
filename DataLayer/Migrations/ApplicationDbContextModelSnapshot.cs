@@ -236,7 +236,7 @@ namespace DataLayer.Migrations
                     b.Property<DateTime?>("DoneDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DueDate")
+                    b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("LastModified")
