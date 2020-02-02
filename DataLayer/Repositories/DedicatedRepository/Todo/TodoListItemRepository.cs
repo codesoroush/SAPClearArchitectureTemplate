@@ -30,8 +30,10 @@ namespace DataLayer.Repositories.DedicatedRepository.Todo
         public List<TodoItem> GetAllTodoItemsInLastDays(string userId,int dayCount)
         {
 
+            
+
             var minDate = DateTime.Now.AddDays(dayCount * -1);
-            var result = _context.TodoItems.Where(w => w.ApplicationUserId == userId && w.DueDate >= minDate && w.DueDate <= DateTime.Now);
+            var result = _context.TodoItems.Where(w => w.TodoList.ApplicationUserId  == userId && w.DueDate >= minDate && w.DueDate <= DateTime.Now);
 
             return result.ToList();
 

@@ -9,14 +9,7 @@ namespace BussinessLayer.Entities
     public class TodoItem:BaseEntity
     {
 
-        public TodoItem()
-        {
-            if (TodoList is { })
-            {
-                ApplicationUserId = TodoList.ApplicationUserId;
 
-            }
-        }
         public long Id { get; set; }
 
         public int ListId { get; set; }
@@ -41,8 +34,6 @@ namespace BussinessLayer.Entities
         #region Entity Relations
         public int TodoListId { get; set; }
         public TodoList TodoList { get; set; }
-
-        public string ApplicationUserId { get; set; }
 
         #endregion
 

@@ -321,13 +321,6 @@ else
 
     async void SaveTodoList(bool? assign = false)
     {
-        if (assign.HasValue && assign.Value)
-        {
-     foreach (var item in selectedTodo.TodoItems)
-        {
-            item.ApplicationUserId = selectedTodo.ApplicationUserId;
-        }
-        }
    
         await TodoService.Update(selectedTodo);
 
@@ -351,7 +344,7 @@ else
     }
     void AddTodo()
     {
-        selectedTodo.TodoItems.Add(new TodoItem {  ApplicationUserId = userId});
+        selectedTodo.TodoItems.Add(new TodoItem {  });
     }
     //void KeyUp(KeyboardEventArgs e)
     //{
