@@ -33,7 +33,7 @@ namespace DataLayer.Repositories.DedicatedRepository.Todo
             
 
             var minDate = DateTime.Now.AddDays(dayCount * -1);
-            var result = _context.TodoItems.Where(w => w.TodoList.ApplicationUserId  == userId && w.DueDate >= minDate && w.DueDate <= DateTime.Now);
+            var result = _context.TodoItems.Where(w => w.TodoList.ApplicationUserId  == userId && w.DoneDate.Value >= minDate && w.DoneDate <= DateTime.Now);
 
             return result.ToList();
 
