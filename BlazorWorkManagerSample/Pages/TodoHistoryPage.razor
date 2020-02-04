@@ -5,12 +5,13 @@
 
 
 
+<h4>Now Date : @DateTime.Now.ToString("yyyy/MM/dd")</h4>
     <div class="row">
         <div class="col-md-12">
 
-            <div class="card">
+            <div class="card text-white bg-dark">
                 <div class="card-body">
-                    Next day tasks
+                    Upcoming task
                 </div>
             </div>
         </div>
@@ -23,8 +24,8 @@
                         <h5 class="card-title">@item.Title</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
                         <p class="card-text">@item.Note</p>
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
+                        <a href="#" class="card-link">Show Detail</a>
+                        <a href="#" class="card-link">Show TodoList</a>
                     </div>
                 </div>
             </div>
@@ -38,9 +39,9 @@
             var todoes = TodoItems.Where(w => w.DoneDate.Value.Date == DateTime.Now.AddDays(i * -1).Date);
 <div class="row">
     <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                @DateTime.Now.AddDays(i * -1).Date.ToShortDateString()
+        <div class="card text-white bg-dark">
+            <div class="card-body ">
+                @DateTime.Now.AddDays(i * -1).Date.ToString("yyyy/MM/dd")
             </div>
         </div>
     </div>
@@ -58,8 +59,8 @@
                         <h5 class="card-title">@todoItem.Title</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
                         <p class="card-text">@todoItem.Note</p>
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
+                        <a href="#" class="card-link">Show Detail</a>
+                        <a href="#" class="card-link">Show TodoList</a>
                     </div>
                 </div>
             </div>
@@ -72,7 +73,7 @@
     {
 
         <div class="col-md-6">
-            <div class="card alert-danger">
+            <div class="card bg-light">
                 <div class="card-body">
                     <h5 class="card-title">Nothing to show</h5>
                 
