@@ -181,3 +181,6 @@ app {
         display: block;
     }
 }
+.card{
+    margin:5px;
+}

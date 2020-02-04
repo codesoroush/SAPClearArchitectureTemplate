@@ -48,6 +48,12 @@ namespace ServiceLayer.Services
 
         }
 
+        public List<TodoItem> GetUndoneTodoItemInTomorrow()
+        {
+            List<TodoItem> todoes = _uow.TodoItem.GetUndoneTodoItemInTomorrow();
+            return todoes;
+        }
+
         public async Task Update(TodoList todo)
         {
           

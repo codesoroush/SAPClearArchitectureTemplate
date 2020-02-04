@@ -5,55 +5,98 @@
 
 
 
-    <div>
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="card">
+                <div class="card-body">
+                    Next day tasks
+                </div>
+            </div>
+        </div>
+
+        @foreach (var item in UndoneTodoItems)
+        {
+            <div class="col-md-6">
+                <div class="card alert-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                        <p class="card-text">@item.Note</p>
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+        <hr style="border-top:11px solid rgba(0,0,0,.1)" />
+
         @for (int i = 0; i < 7; i++)
         {
             var todoes = TodoItems.Where(w => w.DoneDate.Value.Date == DateTime.Now.AddDays(i * -1).Date);
-            @if (todoes.Count() > 0)
-            {
-
-        <div class="list-group">
-
-            @foreach (var todoItem in todoes)
-
-            {
-
-                <a href="#" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-info">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1"> @todoItem.Title</h5>
-                        <small>@todoItem.LastModified.Value.ToShortDateString()</small>
-                    </div>
-                    <p class="mb-1">@todoItem.Note</p>
-                    <small> Creayed by : @todoItem.CreatedBy</small>
-                </a>
-               <br />
-
-             
-
-            }
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                @DateTime.Now.AddDays(i * -1).Date.ToShortDateString()
+            </div>
         </div>
-        }
-        else
-        {
-            <p>Empty</p>
-        }
+    </div>
 
-            <hr />
-        }
-        </div>
-
-
-@code {
-    public DateTime TodayDate { get; set; } = DateTime.Now;
-
-    public string userId { get; set; }
-
-    public List<TodoItem> TodoItems { get; set; }
-
-    protected override async Task OnInitializedAsync()
+    @if (todoes.Count() > 0)
     {
-        userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        TodoItems = TodoService.GetAllTodoItemsnLastDays(userId,7);
-    }
 
-}
+        @foreach (var todoItem in todoes)
+
+        {
+
+            <div class="col-md-6">
+                <div class="card alert-success">
+                    <div class="card-body">
+                        <h5 class="card-title">@todoItem.Title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+                        <p class="card-text">@todoItem.Note</p>
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div>
+                </div>
+            </div>
+
+
+        }
+
+    }
+    else
+    {
+
+        <div class="col-md-6">
+            <div class="card alert-danger">
+                <div class="card-body">
+                    <h5 class="card-title">Nothing to show</h5>
+                
+                </div>
+            </div>
+        </div>
+    }
+</div>
+        }
+
+
+        @code {
+            public DateTime TodayDate { get; set; } = DateTime.Now;
+
+            public string userId { get; set; }
+
+            public List<TodoItem> TodoItems { get; set; }
+            public List<TodoItem> UndoneTodoItems { get; set; }
+
+            protected override async Task OnInitializedAsync()
+            {
+                userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                TodoItems = TodoService.GetAllTodoItemsnLastDays(userId, 7);
+                UndoneTodoItems = TodoService.GetUndoneTodoItemInTomorrow();
+            }
+
+        }

@@ -11,9 +11,7 @@ namespace ServiceLayer.Services
 
         List<TodoList> GetAllTodoes(string userId);
         List<TodoItem> GetAllTodoItemsnLastDays(string userId,int dayCount);
-
-
-        
+        List<TodoItem> GetUndoneTodoItemInTomorrow();       
         Task<TodoList> CreateTodo(TodoList todo);
         Task Update(TodoList todo);
         void DeleteTask(TodoList todo);
