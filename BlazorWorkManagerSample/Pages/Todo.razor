@@ -6,11 +6,9 @@
 @using BussinessLayer.ExtentionMethods
 
 
-<SAPToastArea
-           @ref="ToastArea"
-          SAPToastDirection="SAPToastDirection.Column"
-           ToastAreatPosition="SAPToastAreatPosition.Right"
-              >
+<SAPToastArea @ref="ToastArea"
+              SAPToastDirection="SAPToastDirection.Column"
+              ToastAreatPosition="SAPToastAreatPosition.Right">
 
 </SAPToastArea>
 
@@ -21,6 +19,13 @@
              FooterText="@todoItem.LastModified.ToSAPFormat()"
              Title="@todoItem.Title">
     <div class="text-left">
+        <div class="form-group">
+            <label>
+                Title:
+            </label>
+            <input @bind="todoItem.Title" class="form-control" placeholder="task title" />
+
+        </div>
         <div class="form-group">
             <label>
                 Note:
@@ -67,7 +72,7 @@
         <small id="emailHelp" class="form-text text-danger">@ErrorText</small>
 
     </div>
-    
+
 
     <div class="form-group text-left">
 
@@ -81,9 +86,7 @@
 </SAPAlertBox>
 
 
-<SAPAlertBox
-             
-             @ref="Alert2"
+<SAPAlertBox @ref="Alert2"
              AnimationType="@AnimateBook.ZoomEntrances.ZoomIn.Faster()"
              Title="Choose user to assign todo"
              SAPAlertType="SAPAlertType.None">
@@ -97,10 +100,35 @@
         </select>
 
     </div>
-  
+
 
     <button @onclick="Assign" class="btn btn-primary btn-block"> Assign </button>
 </SAPAlertBox>
+
+
+<SAPAlertBox @ref="Alert4"
+             SAPAlertType="SAPAlertType.None"
+             AnimationType="@AnimateBook.ZoomEntrances.ZoomIn.Faster()"
+             Title="Create a todo">
+    <div class="form-group text-left">
+        <label> Write a sub task title</label>
+        <input @bind="TodoItemTitle" @bind:event="oninput" @onkeypress="(e) => { if (e.Key == EnterText ){ AddTodo(); } }" class="form-control" placeholder="sub task title (required)" />
+        <small id="emailHelp" class="form-text text-danger">@ErrorText</small>
+
+    </div>
+
+
+    <div class="form-group text-left">
+
+        <input class="form-control" type="color" @bind="todoList.Color" />
+
+    </div>
+
+    <button @onclick="AddTodo" class="btn btn-primary btn-block">
+        Add
+    </button>
+</SAPAlertBox>
+
 
 @if (selectedTodo == null)
 {<div class="row">
@@ -169,39 +197,44 @@ else
             <ul class="list-group mb-2">
                 @foreach (var todo in selectedTodo.TodoItems)
                 {
-                    <li class="list-group-item">
-                        <button @onclick="() => ShowDetail(todo)" class="btn btn-default float-right">
-                            <i class="oi oi-ellipses"></i>
+                     var doneTaskClass = todo.Done ? "done-task" : "";
 
-                        </button>
+                <li class="list-group-item">
+                    <button @onclick="() => ShowDetail(todo)" class="btn btn-default float-right">
+                        <i class="oi oi-ellipses"></i>
 
-                        <div class="form-group" style="display:flex;">
-                            <div>
-                                <input type="checkbox" style="margin:auto 5px;" value="@todo.Done" checked="@todo.Done" @onchange="(e) => CheckBoxChange(e,todo)" />
+                    </button>
 
-                            </div>
-                            @if (todo.Focoused)
-                            {
-                                <input value="@todo.Title" @onfocusout="() => todo.Focoused = false" class="form-control" @onchange="(e) => InputChange(e,todo)" />
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input"  @bind="todo.Done">
+                        <label @onclick="() => todo.Done = !todo.Done" class="custom-control-label @doneTaskClass" >@todo.Title</label>
+                    </div>
 
-                            }
-                            else
-                            {
+                    @*<   <div class="form-group" style="display:flex;">
+        div>
+            <input type="checkbox" style="margin:auto 5px;" value="@todo.Done" checked="@todo.Done" @onchange="(e) => CheckBoxChange(e,todo)" />
 
-                                var txtDecoration = todo.Done ? "#2fc5a3" : "black";
+        </div>*@
+                    @*@if (todo.Focoused)
+                {
+                    <input value="@todo.Title" @onfocusout="() => todo.Focoused = false" class="form-control" @onchange="(e) => InputChange(e,todo)" />
 
-                                <div style="color:@txtDecoration" @onclick="() => todo.Focoused = true">@todo.Title</div>
-                                <i @onclick="() => todo.Focoused = true" style="margin: auto 5px" class="oi oi-pencil"></i>
+                }
+                else
+                {
+
+                    var txtDecoration = todo.Done ? "#2fc5a3" : "black";
+                    <div style="color:@txtDecoration" @onclick="() => todo.Focoused = true">@todo.Title</div>
 
 
-                            }
+                }
 
-                        </div>
+        </div>*@
 
-                    </li>
+                </li>
                 }
                 <li class="list-group-item">
-                    <button @onclick="AddTodo" class="btn btn-default">
+                    <button @onclick="ShowTodoItemCreator" class="btn btn-primary">
                         Add Item ...
 
                     </button>
@@ -220,6 +253,9 @@ else
     public SAPAlertBox Alert1;
     public SAPAlertBox Alert2;
     public SAPAlertBox Alert3;
+    public string EnterText => "Enter";
+    public SAPAlertBox Alert4;
+    public string TodoItemTitle { get; set; } = "";
     public string AssignUserId { get; set; }
     public string ErrorText { get; set; }
     string userId = "";
@@ -237,11 +273,12 @@ else
         selectedTodo = null;
         StateHasChanged();
         ToastArea.CreateToast
-( new SAPToast {
+(new SAPToast
+{
     AlertType = SAPAlertType.Info,
     Title = "Todo Deleted",
     AutoCloseDelay = TimeSpan.FromSeconds(3),
-    ShowProgressbar= true
+    ShowProgressbar = true
 });
     }
     void UpdateSubTask(TodoItem item)
@@ -251,11 +288,12 @@ else
         item.LastModified = DateTime.Now;
         SaveTodoList();
         ToastArea.CreateToast
-( new SAPToast {
+(new SAPToast
+{
     AlertType = SAPAlertType.Success,
     Title = "Todo Updated",
     AutoCloseDelay = TimeSpan.FromSeconds(3),
-    ShowProgressbar= true
+    ShowProgressbar = true
 });
 
     }
@@ -269,11 +307,12 @@ else
 
 
         ToastArea.CreateToast
- ( new SAPToast {
+ (new SAPToast
+ {
      AlertType = SAPAlertType.Info,
      Title = "SubTodo Deleted",
      AutoCloseDelay = TimeSpan.FromSeconds(3),
-     ShowProgressbar= true
+     ShowProgressbar = true
  });
     }
 
@@ -321,7 +360,7 @@ else
 
     async void SaveTodoList(bool? assign = false)
     {
-   
+
         await TodoService.Update(selectedTodo);
 
     }
@@ -335,16 +374,31 @@ else
         StateHasChanged();
         Alert2.HideAlert();
         ToastArea.CreateToast
-            ( new SAPToast {
+            (new SAPToast
+            {
                 AlertType = SAPAlertType.Success,
                 Title = "Todo assigned",
                 AutoCloseDelay = TimeSpan.FromSeconds(3),
-                ShowProgressbar= true
+                ShowProgressbar = true
             });
     }
     void AddTodo()
     {
-        selectedTodo.TodoItems.Add(new TodoItem {  });
+        if (string.IsNullOrEmpty(TodoItemTitle))
+        {
+
+            ErrorText = "Todo item can not be empty";
+            return;
+        }
+
+        selectedTodo.TodoItems.Add(new TodoItem { Title= TodoItemTitle });
+        Alert4.HideAlert();
+        ToastArea.CreateToast(
+            new SAPToast { Title = "Todo item has been created"
+            ,AlertType = SAPAlertType.Success,
+                ShowProgressbar = true,
+                AutoCloseDelay = TimeSpan.FromSeconds(2)
+            });;
     }
     //void KeyUp(KeyboardEventArgs e)
     //{
@@ -354,6 +408,14 @@ else
 
     //    }
     //}
+
+    void ShowTodoItemCreator()
+    {
+        TodoItemTitle = "";
+        ErrorText = "";
+        Alert4.ShowAlert();
+
+    }
     async void CreateTodo()
     {
         if (string.IsNullOrEmpty(todoList.Title))
@@ -376,11 +438,12 @@ else
             StateHasChanged();
 
             ToastArea.CreateToast
-     ( new SAPToast {
+     (new SAPToast
+     {
          AlertType = SAPAlertType.Success,
          Title = "Todo created",
          AutoCloseDelay = TimeSpan.FromSeconds(3),
-         ShowProgressbar= true
+         ShowProgressbar = true
      });
         }
 
@@ -391,7 +454,7 @@ else
 
         userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         todoes = TodoService.GetAllTodoes(userId);
-        otherUsers = await  UserService.GetOtherUsers(userId);
+        otherUsers = await UserService.GetOtherUsers(userId);
         AssignUserId = otherUsers.FirstOrDefault()?.Id;
 
 

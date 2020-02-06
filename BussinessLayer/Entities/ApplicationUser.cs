@@ -17,5 +17,9 @@ namespace BussinessLayer.Entities
         public virtual List<TodoList> Todoes { get; set; }
         public virtual List<Absence> Absences { get; set; }
 
+        public int? CompanyId { get; set; }
+        public bool IsCompanyAdmin { get; set; } = false;
+        public Company Company { get; set; }
+
     }
 }

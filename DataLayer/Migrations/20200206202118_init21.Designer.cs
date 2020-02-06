@@ -4,14 +4,16 @@ using DataLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200206202118_init21")]
+    partial class init21
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,9 +79,6 @@ namespace DataLayer.Migrations
                     b.Property<string>("Avatar")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -96,9 +95,6 @@ namespace DataLayer.Migrations
 
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsCompanyAdmin")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("LastOnlineDate")
                         .HasColumnType("datetime2");
@@ -144,8 +140,6 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -155,39 +149,6 @@ namespace DataLayer.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("BussinessLayer.Entities.Company", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("EndWorkTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LimitedCountry")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LimitedIpRange")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LimitedProviderName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NoteOfTheDay")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartWorkTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Company");
                 });
 
             modelBuilder.Entity("BussinessLayer.Entities.DailyLeaves", b =>
@@ -511,13 +472,6 @@ namespace DataLayer.Migrations
                     b.HasOne("BussinessLayer.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany("Absences")
                         .HasForeignKey("ApplicationUserId");
-                });
-
-            modelBuilder.Entity("BussinessLayer.Entities.ApplicationUser", b =>
-                {
-                    b.HasOne("BussinessLayer.Entities.Company", "Company")
-                        .WithMany("Users")
-                        .HasForeignKey("CompanyId");
                 });
 
             modelBuilder.Entity("BussinessLayer.Entities.DailyLeaves", b =>

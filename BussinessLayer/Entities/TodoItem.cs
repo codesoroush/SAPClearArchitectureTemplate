@@ -26,6 +26,7 @@ namespace BussinessLayer.Entities
         public TodoProgress TodoProgress { get; set; } = TodoProgress.Created;
         public int Point { get; set; } = 0;
         public PriorityLevel Priority { get; set; }
+        public TodoItemCategory TodoItemCategory { get; set; }
 
         [NotMapped]
         public virtual bool Focoused { get; set; } = false;

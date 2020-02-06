@@ -184,3 +184,10 @@ app {
 .card{
     margin:5px;
 }
+.done-task {
+    color: #007bff;
+    font-weight: bold;
+}
+.custom-control{
+    display:flex;
+}

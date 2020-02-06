@@ -4,14 +4,16 @@ using DataLayer.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200206203541_init23")]
+    partial class init23
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,6 +82,9 @@ namespace DataLayer.Migrations
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CompanyId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -96,9 +101,6 @@ namespace DataLayer.Migrations
 
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsCompanyAdmin")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("LastOnlineDate")
                         .HasColumnType("datetime2");
@@ -145,6 +147,8 @@ namespace DataLayer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("CompanyId1");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -515,9 +519,13 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("BussinessLayer.Entities.ApplicationUser", b =>
                 {
-                    b.HasOne("BussinessLayer.Entities.Company", "Company")
-                        .WithMany("Users")
+                    b.HasOne("BussinessLayer.Entities.Company", null)
+                        .WithMany("Admins")
                         .HasForeignKey("CompanyId");
+
+                    b.HasOne("BussinessLayer.Entities.Company", null)
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyId1");
                 });
 
             modelBuilder.Entity("BussinessLayer.Entities.DailyLeaves", b =>

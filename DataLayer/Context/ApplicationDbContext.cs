@@ -14,8 +14,10 @@ namespace DataLayer.Context
         public DbSet<TodoList> Todoes { get; set; }
         public DbSet<Absence> Absences { get; set; }
         public DbSet<DailyLeaves> DailyLeaves { get; set; }
+        public DbSet<TodoItemCategory> TodoItemCategory { get; set; }
+        public DbSet<Company> Company { get; set; }
 
-
+        
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
          : base(options)
         {
