@@ -1,0 +1,48 @@
+﻿@page "/CategoryManager"
+@using BussinessLayer.Entities
+@using BussinessLayer.ExtentionMethods
+@inject ITodoService TodoService
+@attribute [Authorize]
+
+<input @bind="category.Name" />
+<button @onclick="AddCategory">Add Category</button>
+@if (Categories is { })
+{
+    foreach (var item in Categories)
+    {
+        <p>@item.Name</p>
+    }
+}
+
+
+@code {
+
+
+    TodoItemCategory category = new TodoItemCategory();
+
+    public List<TodoItemCategory> Categories = new List<TodoItemCategory>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await TodoService.GetCategories();
+        if (result is { })
+        {
+            Categories.AddRange(result);
+
+        }
+    }
+
+
+    async void AddCategory()
+    {
+        category.ColorCode = SAPGenerator.GenerateHexColorCode;
+        var result = await TodoService.CreateCategory(category);
+        if (result is { })
+        {
+            Categories.Add(result);
+            category = new TodoItemCategory();
+        }
+
+    }
+
+}

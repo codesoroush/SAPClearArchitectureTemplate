@@ -17,6 +17,13 @@ namespace ServiceLayer.Services
             _uow = uow as UnitOfWork;
         }
 
+        public async Task<TodoItemCategory> CreateCategory(TodoItemCategory category)
+        {
+            var result = await _uow.TodoItemCategoryGate.AddAsync(category);
+            await _uow.CommitAsync();
+            return result;
+        }
+
         public async Task<TodoList> CreateTodo(TodoList todo)
         {
             var result = await _uow.TodoList.AddAsync(todo);
@@ -46,6 +53,11 @@ namespace ServiceLayer.Services
 
             return todoItems;
 
+        }
+
+        public async Task<List<TodoItemCategory>> GetCategories()
+        {
+            return (await _uow.TodoItemCategoryGate.GetAll()).ToList();
         }
 
         public List<TodoItem> GetUndoneTodoItemInTomorrow()

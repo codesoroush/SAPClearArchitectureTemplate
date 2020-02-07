@@ -8,6 +8,8 @@ namespace ServiceLayer.Services
 {
     public interface ITodoService
     {
+        Task<List<TodoItemCategory>> GetCategories();
+        Task<TodoItemCategory> CreateCategory(TodoItemCategory category);
 
         List<TodoList> GetAllTodoes(string userId);
         List<TodoItem> GetAllTodoItemsnLastDays(string userId,int dayCount);

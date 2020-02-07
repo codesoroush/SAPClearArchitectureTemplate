@@ -4,7 +4,7 @@
 @inject IHttpContextAccessor httpContextAccessor
 @using BussinessLayer.Entities
 @using BussinessLayer.ExtentionMethods
-
+@attribute [Authorize]
 
 <SAPToastArea @ref="ToastArea"
               SAPToastDirection="SAPToastDirection.Column"
@@ -197,41 +197,41 @@ else
             <ul class="list-group mb-2">
                 @foreach (var todo in selectedTodo.TodoItems)
                 {
-                     var doneTaskClass = todo.Done ? "done-task" : "";
+                    var doneTaskClass = todo.Done ? "done-task" : "";
 
-                <li class="list-group-item">
-                    <button @onclick="() => ShowDetail(todo)" class="btn btn-default float-right">
-                        <i class="oi oi-ellipses"></i>
+                    <li class="list-group-item">
+                        <button @onclick="() => ShowDetail(todo)" class="btn btn-default float-right">
+                            <i class="oi oi-ellipses"></i>
 
-                    </button>
+                        </button>
 
-                    <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input"  @bind="todo.Done">
-                        <label @onclick="() => todo.Done = !todo.Done" class="custom-control-label @doneTaskClass" >@todo.Title</label>
-                    </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" @bind="todo.Done">
+                            <label @onclick="() => todo.Done = !todo.Done" class="custom-control-label @doneTaskClass">@todo.Title</label>
+                        </div>
 
-                    @*<   <div class="form-group" style="display:flex;">
-        div>
-            <input type="checkbox" style="margin:auto 5px;" value="@todo.Done" checked="@todo.Done" @onchange="(e) => CheckBoxChange(e,todo)" />
+                        @*<   <div class="form-group" style="display:flex;">
+                            div>
+                                <input type="checkbox" style="margin:auto 5px;" value="@todo.Done" checked="@todo.Done" @onchange="(e) => CheckBoxChange(e,todo)" />
 
-        </div>*@
-                    @*@if (todo.Focoused)
-                {
-                    <input value="@todo.Title" @onfocusout="() => todo.Focoused = false" class="form-control" @onchange="(e) => InputChange(e,todo)" />
+                            </div>*@
+                        @*@if (todo.Focoused)
+                                    {
+                                        <input value="@todo.Title" @onfocusout="() => todo.Focoused = false" class="form-control" @onchange="(e) => InputChange(e,todo)" />
 
-                }
-                else
-                {
+                                    }
+                                    else
+                                    {
 
-                    var txtDecoration = todo.Done ? "#2fc5a3" : "black";
-                    <div style="color:@txtDecoration" @onclick="() => todo.Focoused = true">@todo.Title</div>
+                                        var txtDecoration = todo.Done ? "#2fc5a3" : "black";
+                                        <div style="color:@txtDecoration" @onclick="() => todo.Focoused = true">@todo.Title</div>
 
 
-                }
+                                    }
 
-        </div>*@
+                            </div>*@
 
-                </li>
+                    </li>
                 }
                 <li class="list-group-item">
                     <button @onclick="ShowTodoItemCreator" class="btn btn-primary">
@@ -391,14 +391,17 @@ else
             return;
         }
 
-        selectedTodo.TodoItems.Add(new TodoItem { Title= TodoItemTitle });
+        selectedTodo.TodoItems.Add(new TodoItem { Title = TodoItemTitle });
         Alert4.HideAlert();
         ToastArea.CreateToast(
-            new SAPToast { Title = "Todo item has been created"
-            ,AlertType = SAPAlertType.Success,
+            new SAPToast
+            {
+                Title = "Todo item has been created"
+            ,
+                AlertType = SAPAlertType.Success,
                 ShowProgressbar = true,
                 AutoCloseDelay = TimeSpan.FromSeconds(2)
-            });;
+            }); ;
     }
     //void KeyUp(KeyboardEventArgs e)
     //{
@@ -453,8 +456,20 @@ else
     {
 
         userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        todoes = TodoService.GetAllTodoes(userId);
-        otherUsers = await UserService.GetOtherUsers(userId);
+        var todoesResult = TodoService.GetAllTodoes(userId);
+        todoes = new List<TodoList>();
+        if (todoes is { })
+        {
+            todoes.AddRange(todoes);
+
+        }
+        var userResult = await UserService.GetOtherUsers(userId);
+        otherUsers = new List<ApplicationUser>();
+
+        if (userResult is { })
+        {
+            otherUsers.AddRange(userResult);
+        }
         AssignUserId = otherUsers.FirstOrDefault()?.Id;
 
 

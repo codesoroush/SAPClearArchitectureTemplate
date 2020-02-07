@@ -15,6 +15,7 @@ namespace DataLayer.Uow
         private ApplicationDbContext _context;
         public TodoListItemRepository TodoList { get; }
         public AbsenceRepository AbsenceGate { get; }
+        public TodoCategoryRepository TodoItemCategoryGate { get; }
         public UserRepository User { get; }
         public TodoItemRepository TodoItem { get; }
 
@@ -24,6 +25,7 @@ namespace DataLayer.Uow
             TodoItem = new TodoItemRepository(context);
             TodoList = new TodoListItemRepository(context);
             AbsenceGate = new AbsenceRepository(context);
+            TodoItemCategoryGate = new TodoCategoryRepository(context);
             User = new UserRepository(context);
 
 

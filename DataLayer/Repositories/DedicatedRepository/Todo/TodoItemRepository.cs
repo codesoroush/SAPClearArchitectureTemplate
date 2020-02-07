@@ -19,7 +19,7 @@ namespace DataLayer.Repositories.DedicatedRepository.Todo
 
         public List<TodoItem> GetUndoneTodoItemInTomorrow()
         {
-            var result = _context.TodoItems.Where(w => w.DueDate.Value.Date == DateTime.Now.AddDays(1).Date && !w.Done);
+            var result = _context.TodoItem.Where(w => w.DueDate.Value.Date == DateTime.Now.AddDays(1).Date && !w.Done);
             return result.ToList();
         }
     }

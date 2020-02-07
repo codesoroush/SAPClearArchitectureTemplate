@@ -42,6 +42,7 @@ namespace ServiceLayer.DepencyInjection
             services.AddTransient<ITodoListItemRepository, TodoListItemRepository>();
             services.AddTransient<IAbsenceRepository, AbsenceRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ITodoCategoryRepository, TodoCategoryRepository>();
 
 
             return services;

@@ -10,9 +10,9 @@ namespace DataLayer.Context
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
 
-        public DbSet<TodoItem> TodoItems { get; set; }
-        public DbSet<TodoList> Todoes { get; set; }
-        public DbSet<Absence> Absences { get; set; }
+        public DbSet<TodoItem> TodoItem { get; set; }
+        public DbSet<TodoList> TodoList { get; set; }
+        public DbSet<Absence> Absence { get; set; }
         public DbSet<DailyLeaves> DailyLeaves { get; set; }
         public DbSet<TodoItemCategory> TodoItemCategory { get; set; }
         public DbSet<Company> Company { get; set; }

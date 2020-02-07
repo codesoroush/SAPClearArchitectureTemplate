@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace DataLayer.Repositories.GenericRepository
 {
+
     public class Repository<T> : IRepository<T> where T : class
     {
 
@@ -39,6 +41,7 @@ namespace DataLayer.Repositories.GenericRepository
 
         public async Task<IEnumerable<T>> GetAll()
         {
+    
             return await _dbSet.ToListAsync();
         }
 
