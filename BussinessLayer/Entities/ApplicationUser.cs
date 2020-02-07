@@ -14,8 +14,8 @@ namespace BussinessLayer.Entities
         public DateTime? LastPasswordResetDate { get; set; }
         public string ConnectionId { get; set; }
         public string Avatar { get; set; }
-        public virtual List<TodoList> Todoes { get; set; }
-        public virtual List<Absence> Absences { get; set; }
+        public List<TodoList> Todoes { get; set; }
+        public List<Absence> Absences { get; set; }
 
         public int? CompanyId { get; set; }
         public bool IsCompanyAdmin { get; set; } = false;

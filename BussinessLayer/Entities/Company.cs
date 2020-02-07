@@ -16,7 +16,6 @@ namespace BussinessLayer.Entities
         public string LimitedCountry {get; set; }
         public string NoteOfTheDay { get; set; }
 
-        public List<ApplicationUser> Users { get; set; }
 
     }
 }

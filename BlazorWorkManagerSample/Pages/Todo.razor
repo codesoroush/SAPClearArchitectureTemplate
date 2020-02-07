@@ -460,7 +460,7 @@ else
         todoes = new List<TodoList>();
         if (todoes is { })
         {
-            todoes.AddRange(todoes);
+            todoes.AddRange(todoesResult);
 
         }
         var userResult = await UserService.GetOtherUsers(userId);
