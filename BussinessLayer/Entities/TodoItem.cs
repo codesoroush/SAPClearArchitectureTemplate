@@ -9,7 +9,7 @@ namespace BussinessLayer.Entities
     public class TodoItem:BaseEntity
     {
 
-
+        private bool done { get; set; }
         public long Id { get; set; }
 
         public int ListId { get; set; }
@@ -18,7 +18,23 @@ namespace BussinessLayer.Entities
 
         public string Note { get; set; }
 
-        public bool Done { get; set; }
+        public bool Done {
+            get
+            {
+                return done;
+            }
+            set {
+                done = value;
+                if (!done)
+                {
+                    DoneDate = null;
+                }
+                else
+                {
+                    DoneDate = DateTime.Now;
+                }
+            }
+        }
 
         public DateTime? Reminder { get; set; }
         public DateTime? DoneDate { get; set; }
@@ -26,6 +42,9 @@ namespace BussinessLayer.Entities
         public TodoProgress TodoProgress { get; set; } = TodoProgress.Created;
         public int Point { get; set; } = 0;
         public PriorityLevel Priority { get; set; }
+
+        public int? TodoItemCategoryId { get; set; }
+
         public TodoItemCategory TodoItemCategory { get; set; }
 
         [NotMapped]

@@ -1,87 +1,178 @@
 ﻿@page "/todohistory"
 @inject ITodoService TodoService
-@inject IHttpContextAccessor httpContextAccessor
+@inject IUserService UserService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @using BussinessLayer.Entities
 @attribute [Authorize]
+@using BussinessLayer.ExtentionMethods
 
 
 <h4>Now Date : @DateTime.Now.ToString("yyyy/MM/dd")</h4>
 <div class="row">
+
+
+
+
     <div class="col-md-12">
 
-        <div class="card text-white bg-dark">
-            <div class="card-body">
-                Upcoming task
-            </div>
-        </div>
+
+
+        <table class="table table-bordered table-striped">
+
+            <thead>
+                <tr class="alert-warning text-center">
+                    <th colspan="3">
+                        Undone tasks
+
+                    </th>
+                </tr>
+                <tr  class="alert-warning text-center">
+                    <th>
+                        Title
+
+                    </th>
+                    <th>
+                        Note
+                    </th>
+                    <th>
+                        Category
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (UndoneTodoItems is { })
+                {
+                    foreach (var item in UndoneTodoItems)
+                    {
+                        <tr class="text-center">
+                            <td>
+                                @item.Title
+                            </td>
+                            <td>
+                                @item.Note
+                            </td>
+                            <td>
+                                @if (item.TodoItemCategory is { })
+                                {
+                                    <span class="badge " style="color:@SAPGenerator.TextColorDecider(item.TodoItemCategory.ColorCode);background-color:@item.TodoItemCategory.ColorCode">@item.TodoItemCategory.Name</span>
+
+                                }
+                                else
+                                {
+                                    <span></span>
+                                }
+                            </td>
+                        </tr>
+
+
+
+                    }
+
+                }
+                else
+                {
+
+                    <tr>
+                        <td colspan="3" class="text-center">
+                            Nothing to show
+                        </td>
+
+                    </tr>
+
+                }
+                
+            </tbody>
+        </table>
+
+
+
+
     </div>
-
-    @foreach (var item in UndoneTodoItems)
-    {
-        <div class="col-md-6">
-            <div class="card alert-warning">
-                <div class="card-body">
-                    <h5 class="card-title">@item.Title</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                    <p class="card-text">@item.Note</p>
-                    <a href="#" class="card-link">Show Detail</a>
-                    <a href="#" class="card-link">Show TodoList</a>
-                </div>
-            </div>
-        </div>
-
-    }
 </div>
+
 <hr style="border-top:11px solid rgba(0,0,0,.1)" />
 
 @for (int i = 0; i < 7; i++)
 {
-    var todoes = TodoItems.Where(w => w.DoneDate.Value.Date == DateTime.Now.AddDays(i * -1).Date);
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card text-white bg-dark">
-                <div class="card-body ">
-                    @DateTime.Now.AddDays(i * -1).Date.ToString("yyyy/MM/dd")
-                </div>
+    if (TodoItems is { })
+    {
+        var todoes = TodoItems.Where(w => w.DoneDate.Value.Date == DateTime.Now.AddDays(i * -1).Date);
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <table class="table table-bordered table-striped">
+
+                    <thead>
+                        <tr class="alert-success text-center">
+                            <th colspan="3">
+                                @DateTime.Now.AddDays(i * -1).Date.ToString("yyyy/MM/dd")
+
+                            </th>
+                        </tr>
+                        <tr class="alert-success text-center">
+                            <th>
+                                Title
+
+                            </th>
+                            <th>
+                                Note
+                            </th>
+                            <th>
+                                Category
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (todoes.Count() > 0)
+                        {
+
+                            @foreach (var todoItem in todoes)
+
+                            {
+                                <tr class="text-center">
+                                    <td>
+                                        @todoItem.Title
+                                    </td>
+                                    <td>
+                                        @todoItem.Note
+                                    </td>
+                                    <td>
+                                        @if (todoItem.TodoItemCategory is { })
+                                        {
+                                            <span class="badge " style="color:@SAPGenerator.TextColorDecider(todoItem.TodoItemCategory.ColorCode);background-color:@todoItem.TodoItemCategory.ColorCode">@todoItem.TodoItemCategory.Name</span>
+
+                                        }
+                                        else
+                                        {
+                                            <span></span>
+                                        }
+                                    </td>
+                                </tr>
+
+
+
+                            }
+
+                        }
+                        else
+                        {
+
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    Nothing to show
+                                </td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        @if (todoes.Count() > 0)
-        {
+    }
 
-            @foreach (var todoItem in todoes)
-
-            {
-
-                <div class="col-md-6">
-                    <div class="card alert-success">
-                        <div class="card-body">
-                            <h5 class="card-title">@todoItem.Title</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                            <p class="card-text">@todoItem.Note</p>
-                            <a href="#" class="card-link">Show Detail</a>
-                            <a href="#" class="card-link">Show TodoList</a>
-                        </div>
-                    </div>
-                </div>
-
-
-            }
-
-        }
-        else
-        {
-
-            <div class="col-md-6">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">Nothing to show</h5>
-
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
 }
 
 
@@ -90,14 +181,19 @@
 
     public string userId { get; set; }
 
-    public List<TodoItem> TodoItems { get; set; }
-    public List<TodoItem> UndoneTodoItems { get; set; }
+    public List<TodoItem>
+    TodoItems
+    { get; set; }
+    public List<TodoItem>
+        UndoneTodoItems
+    { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userId = (await UserService.FindUserByUserName(authState.User.Identity.Name)).Id;
         TodoItems = TodoService.GetAllTodoItemsnLastDays(userId, 7);
-        UndoneTodoItems = TodoService.GetUndoneTodoItemInTomorrow();
+        UndoneTodoItems = TodoService.GetUndoneTodoItemInTomorrow(userId);
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BussinessLayer.ExtentionMethods;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -11,6 +12,6 @@ namespace BussinessLayer.Entities
         [StringLength(50)]
         public string Name { get; set; }
         [StringLength(12)]
-        public string ColorCode { get; set; }
+        public string ColorCode { get; set; } = SAPGenerator.GenerateHexColorCode;
     }
 }

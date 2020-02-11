@@ -1,22 +1,17 @@
 ﻿@page "/absence"
 @inject IAbsenceService AbsenceeService
+@inject IUserService UserService
 @using BussinessLayer.Entities
-@inject IHttpContextAccessor httpContextAccessor
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @using BussinessLayer.Enums
-@inject IJSRuntime JsRuntime
 @using BussinessLayer.ViewModels.LookupIpApi
 @using Newtonsoft.Json;
 @attribute [Authorize]
 
-<SAPAlertBox
-
-AlertBoxSize="SAPAlertBoxSize.Small"
-
-@ref="Alert1"
-
-SAPAlertType="SAPAlertType.Danger"
-
-Title="OPS , your country is not correct"      >
+<SAPAlertBox AlertBoxSize="SAPAlertBoxSize.Small"
+             @ref="Alert1"
+             SAPAlertType="SAPAlertType.Danger"
+             Title="OPS , your country is not correct">
 
 
     <p>note : for your work enter, country must be iran</p>
@@ -26,19 +21,15 @@ Title="OPS , your country is not correct"      >
 
 
 <SAPAlertBox AlertBoxSize="SAPAlertBoxSize.Small"
-
-      @ref="Alert2"
-
-      PreventUserToCloseAlert="true"
-
-      SAPAlertType="SAPAlertType.Info"
-
-      Title="Please wait...">
+             @ref="Alert2"
+             PreventUserToCloseAlert="true"
+             SAPAlertType="SAPAlertType.Info"
+             Title="Please wait...">
 
 
     <p>
 
- please wait untill ip data calculate end.
+        please wait untill ip data calculate end.
     </p>
 
 </SAPAlertBox>
@@ -59,84 +50,84 @@ Title="OPS , your country is not correct"      >
             <li class="list-group-item">
                 Time : @TimerText
             </li>
-            @if(Absence != null)
-    {
-                <li class="list-group-item">
-                    Today Enter Time : @Absence.Entry.Hour:@Absence.Entry.Minute
-                </li>
+            @if (Absence != null)
+            {
+            <li class="list-group-item">
+                Today Enter Time : @Absence.Entry.Hour:@Absence.Entry.Minute
+            </li>
 
 
                 if (Absence.Exit.HasValue)
                 {
-                    <li class="list-group-item">
-                        Today Exit Time : @Absence.Exit.Value.Hour:@Absence.Exit.Value.Minute
-                    </li>
-                    <li class="list-group-item active">
-                        Time at work : @GetTodayWorkTime()
-                    </li>
+            <li class="list-group-item">
+                Today Exit Time : @Absence.Exit.Value.Hour:@Absence.Exit.Value.Minute
+            </li>
+            <li class="list-group-item active">
+                Time at work : @GetTodayWorkTime()
+            </li>
                 }
             }
 
         </ul>
     </div>
-    @if(Absence == null)
-{
-        <div class="col-md-6">
-            <ul class="list-group">
-                @if(IpLookupResponse != null)
-{
-                    <li class="list-group-item">
-                        Country : @IpLookupResponse.country | @IpLookupResponse.country_name
-                    </li>
-                    <li class="list-group-item">
-                        IP : @IpLookupResponse.ip
-                    </li>
-                    <li class="list-group-item">
-                        ORG : @IpLookupResponse.org
-                    </li>
-                    <li class="list-group-item">
-                        Latitude : @IpLookupResponse.latitude
-                    </li>
-                    <li class="list-group-item">
-                        Longitude : @IpLookupResponse.longitude
-                    </li>
+    @if (Absence == null)
+    {
+    <div class="col-md-6">
+        <ul class="list-group">
+            @if (false)
+                {
+            <li class="list-group-item">
+                Country : @IpLookupResponse.country | @IpLookupResponse.country_name
+            </li>
+            <li class="list-group-item">
+                IP : @IpLookupResponse.ip
+            </li>
+            <li class="list-group-item">
+                ORG : @IpLookupResponse.org
+            </li>
+            <li class="list-group-item">
+                Latitude : @IpLookupResponse.latitude
+            </li>
+            <li class="list-group-item">
+                Longitude : @IpLookupResponse.longitude
+            </li>
                     if (IpLookupResponse.country_name != "Iran")
                     {
-                        <li class="list-group-item">
-                            Country is not correct : <button @onclick = "RecheckIP" class="btn btn-danger">
-                                Recheck
-                            </button>
-                        </li>
+            <li class="list-group-item">
+                Country is not correct : <button @onclick="RecheckIP" class="btn btn-danger">
+                    Recheck
+                </button>
+            </li>
                     }
                 }
 
 
-            </ul>
-        </div>
+        </ul>
+    </div>
     }
     else
     {
-        <div class="col-md-6">
-            <ul class="list-group">
+    <div class="col-md-6">
+        @*<ul class="list-group">
 
-                    <li class="list-group-item">
-                        Country : @Absence.EnterInfo.Country
-                    </li>
-                    <li class="list-group-item">
-                        IP : @Absence.EnterInfo.IP
-                    </li>
-                    <li class="list-group-item">
-                        ORG : @Absence.EnterInfo.Organization
-                    </li>
-                    <li class="list-group-item">
-                        Latitude : @Absence.EnterInfo.Latitude
-                    </li>
-                    <li class="list-group-item">
-                        Longitude : @Absence.EnterInfo.Longitude
-                    </li>
+                <li class="list-group-item">
+                    Country : @Absence.EnterInfo.Country
+                </li>
+                <li class="list-group-item">
+                    IP : @Absence.EnterInfo.IP
+                </li>
+                <li class="list-group-item">
+                    ORG : @Absence.EnterInfo.Organization
+                </li>
+                <li class="list-group-item">
+                    Latitude : @Absence.EnterInfo.Latitude
+                </li>
+                <li class="list-group-item">
+                    Longitude : @Absence.EnterInfo.Longitude
+                </li>
 
-            </ul>
-        </div>
+            </ul>*@
+    </div>
     }
 
 
@@ -144,34 +135,46 @@ Title="OPS , your country is not correct"      >
 <hr />
 <div class="row">
     <div class="col-md-auto">
-        @if(Absence == null)
-{
-
-    if (IpLookupResponse != null)
-    {
-        if (IpLookupResponse.country_name == "Iran")
+        @if (Absence == null)
         {
-                    <div class="form-group" style="display:flex;">
-                        <div>
-                            <select class="form-control" @bind="WorkPlace">
-                                @foreach(var item in Enum.GetValues(typeof(BussinessLayer.Enums.WorkPlace)))
+
+            if (false)
+            {
+                if (IpLookupResponse.country_name == "Iran")
+                {
+        <div class="form-group" style="display:flex;">
+            <div>
+                <select class="form-control" @bind="WorkPlace">
+                    @foreach (var item in Enum.GetValues(typeof(BussinessLayer.Enums.WorkPlace)))
                                 {
-                                    <option>@item</option>
+                    <option>@item</option>
                                 }
-                            </select>
-                        </div>
+                </select>
+            </div>
 
 
-                    </div>
+        </div>
 
-                    <button @onclick = "WorkEnter" class="btn btn-primary">  Enter Work</button>
+        <button @onclick="WorkEnter" class="btn btn-primary">  Enter Work</button>
                 }
 
             }
             else
             {
-                <p> Please wait ... </p>
-            }
+        <div class="form-group" style="display:flex;">
+            <div>
+                <select class="form-control" @bind="WorkPlace">
+                    @foreach (var item in Enum.GetValues(typeof(BussinessLayer.Enums.WorkPlace)))
+                            {
+                    <option>@item</option>
+                            }
+                </select>
+            </div>
+
+
+        </div>
+
+        <button @onclick="WorkEnter" class="btn btn-primary">  Enter Work</button> }
 
 
         }
@@ -180,18 +183,18 @@ Title="OPS , your country is not correct"      >
             var validateDate = Absence.Exit.Value.AddMinutes(5);
             if (validateDate >= DateTime.Now)
             {
-                <button @onclick = "CancelExit" class="btn btn-warning"> Cancel Exit(@RemainValidTime) </button>
+        <button @onclick="CancelExit" class="btn btn-warning"> Cancel Exit(@RemainValidTime) </button>
 
             }
             else
             {
-                <p>Today work managment is done , come back tomorrow</p>
+        <p>Today work managment is done , come back tomorrow</p>
 
             }
         }
         else
         {
-            <button @onclick = "WorkExit" class="btn btn-danger"> Exit</button>
+        <button @onclick="WorkExit" class="btn btn-danger"> Exit</button>
 
         }
     </div>
@@ -204,152 +207,136 @@ Title="OPS , your country is not correct"      >
 @code {
 
     private System.Timers.Timer AbsenceTimer;
-private SAPAlertBox Alert1;
-private SAPAlertBox Alert2;
+    private SAPAlertBox Alert1;
+    private SAPAlertBox Alert2;
 
-public DateTime TodayDate => DateTime.Now;
-public Absence Absence { get; set; }
-public string TimerText { get; set; }
-public IpLookupResponse IpLookupResponse { get; set; } = null;
-public string StatusText { get; set; }
-string userId = "";
-public string RemainValidTime => $"{Absence.Exit.Value.AddMinutes(5).Subtract(TodayDate).Minutes}:{Absence.Exit.Value.AddMinutes(5).Subtract(TodayDate).Seconds}";
-public WorkPlace WorkPlace { get; set; } = WorkPlace.Office;
-string GetTodayWorkTime()
-{
-    var min = Absence.Exit.Value.Subtract(Absence.Entry).TotalMinutes;
-    return $"{Convert.ToInt32(min / 60)}:{Convert.ToInt32(min % 60)}";
-}
-async void RecheckIP()
-{
-
-    try
+    public DateTime TodayDate => DateTime.Now;
+    public Absence Absence { get; set; } = new Absence();
+    public string TimerText { get; set; }
+    public IpLookupResponse IpLookupResponse { get; set; }
+    public string StatusText { get; set; }
+    string userId = "";
+    public string RemainValidTime => $"{Absence.Exit.Value.AddMinutes(5).Subtract(TodayDate).Minutes}:{Absence.Exit.Value.AddMinutes(5).Subtract(TodayDate).Seconds}";
+    public WorkPlace WorkPlace { get; set; } = WorkPlace.Office;
+    string GetTodayWorkTime()
     {
-        Alert2.ShowAlert();
-        var result = await JsRuntime.InvokeAsync<object>("httpGet", "https://ipapi.co/json/");
-        IpLookupResponse = JsonConvert.DeserializeObject<IpLookupResponse>(result.ToString());
-        Alert2.HideAlert();
-
+        var min = Absence.Exit.Value.Subtract(Absence.Entry).TotalMinutes;
+        return $"{Convert.ToInt32(min / 60)}:{Convert.ToInt32(min % 60)}";
     }
-    catch (Exception e)
+    async void RecheckIP()
     {
-        Alert2.HideAlert();
 
-        Console.WriteLine(e.Message);
-    }
-}
-async void CancelExit()
-{
-    Absence.Exit = null;
-    await AbsenceeService.Update(Absence);
-    StatusText = $"You enter work at {Absence.Entry.Hour}:{Absence.Entry.Minute}";
-    StateHasChanged();
-}
-async void WorkEnter()
-{
-
-    if (IpLookupResponse.country_name != "Iran")
-    {
-        Alert1.ShowAlert();
-        return;
-    }
-
-    var abs = new Absence
-    {
-        Entry = DateTime.Now,
-        WorkPlace = WorkPlace,
-        AbsenceMode = BussinessLayer.Enums.AbsenceMode.Normal,
-        Created = DateTime.Now,
-        LastModified = DateTime.Now,
-        ApplicationUserId = userId,
-        EnterInfo = new EnterInfo
+        try
         {
-            Country = IpLookupResponse.country_name,
-            UserAgent = "",
-            IP = IpLookupResponse.ip,
-            Latitude = IpLookupResponse.latitude,
-            Longitude = IpLookupResponse.longitude,
-            Organization = IpLookupResponse.org
+            Alert2.ShowAlert();
+            //var result = await JsRuntime.InvokeAsync<object>("httpGet", "https://ipapi.co/json/");
+            //IpLookupResponse = JsonConvert.DeserializeObject<IpLookupResponse>(result.ToString());
+            Alert2.HideAlert();
+
         }
-    };
-    var result = await AbsenceeService.EnterWork(abs);
-    Absence = result;
-    StatusText = $"You enter work at {Absence.Entry.Hour}:{Absence.Entry.Minute}";
-    StateHasChanged();
+        catch (Exception e)
+        {
+            Alert2.HideAlert();
 
-}
-async void WorkExit()
-{
-    Absence.Exit = DateTime.Now;
-    await AbsenceeService.Update(Absence);
-    StatusText = $"You enter work at {Absence.Entry.Hour}:{Absence.Entry.Minute} and exit at {Absence.Exit.Value.Hour}:{Absence.Exit.Value.Minute}";
-    StateHasChanged();
-
-}
-
-private void Timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-{
-    TimerText = $"{TodayDate.Hour}:{TodayDate.Minute}:{TodayDate.Second}";
-    InvokeAsync(StateHasChanged);
-}
-
-protected override async Task OnAfterRenderAsync(bool firstRender)
-{
-    try
+            Console.WriteLine(e.Message);
+        }
+    }
+    async void CancelExit()
+    {
+        Absence.Exit = null;
+        await AbsenceeService.Update(Absence);
+        StatusText = $"You enter work at {Absence.Entry.Hour}:{Absence.Entry.Minute}";
+        StateHasChanged();
+    }
+    async void WorkEnter()
     {
 
-        if (firstRender)
-        {
+        //if (IpLookupResponse.country_name != "Iran")
+        //{
+        //    Alert1.ShowAlert();
+        //    return;
+        //}
 
+        var abs = new Absence
+        {
+            Entry = DateTime.Now,
+            WorkPlace = WorkPlace,
+            AbsenceMode = BussinessLayer.Enums.AbsenceMode.Normal,
+            Created = DateTime.Now,
+            LastModified = DateTime.Now,
+            ApplicationUserId = userId,
+            EnterInfo = new EnterInfo
+            {
+                Country ="",
+                UserAgent = "",
+                IP = "",
+                Latitude = "",
+                Longitude = "",
+                Organization = ""
+            }
+        };
+        var result = await AbsenceeService.EnterWork(abs);
+        Absence = result;
+        StatusText = $"You enter work at {Absence.Entry.Hour}:{Absence.Entry.Minute}";
+        StateHasChanged();
+
+    }
+    async void WorkExit()
+    {
+        Absence.Exit = DateTime.Now;
+        await AbsenceeService.Update(Absence);
+        StatusText = $"You enter work at {Absence.Entry.Hour}:{Absence.Entry.Minute} and exit at {Absence.Exit.Value.Hour}:{Absence.Exit.Value.Minute}";
+        StateHasChanged();
+
+    }
+
+    private void Timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+    {
+        TimerText = $"{TodayDate.Hour}:{TodayDate.Minute}:{TodayDate.Second}";
+        InvokeAsync(StateHasChanged);
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            userId =  (await UserService.FindUserByUserName(authState.User.Identity.Name)).Id;
+            Absence = await AbsenceeService.GetTodayAbsence(userId);
             if (Absence == null)
             {
-                var result = await JsRuntime.InvokeAsync<object>("httpGet", "https://ipapi.co/json/");
-                IpLookupResponse = JsonConvert.DeserializeObject<IpLookupResponse>(result.ToString());
+                StatusText = "You are not entered yet";
+
+
+
             }
-
-        }
-
-
-
-    }
-    catch (Exception e)
-    {
-
-        IpLookupResponse = null;
-    }
-}
-
-protected override async Task OnInitializedAsync()
-{
-    userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-    Absence = await AbsenceeService.GetTodayAbsence(userId);
-    if (Absence == null)
-    {
-        StatusText = "You are not entered yet";
-
-
-
-    }
-    else
-    {
-
-        @if(Absence.Exit.HasValue)
-            {
-            StatusText = $"You enter work at {Absence.Entry.Hour}:{Absence.Entry.Minute} and exit at {Absence.Exit.Value.Hour}:{Absence.Exit.Value.Minute}";
-
-        }
             else
-        {
-            StatusText = $"You enter work at {Absence.Entry.Hour}:{Absence.Entry.Minute}";
+            {
 
+    @if (Absence.Exit.HasValue)
+                {
+                    StatusText = $"You enter work at {Absence.Entry.Hour}:{Absence.Entry.Minute} and exit at {Absence.Exit.Value.Hour}:{Absence.Exit.Value.Minute}";
+
+                }
+                else
+                {
+                    StatusText = $"You enter work at {Absence.Entry.Hour}:{Absence.Entry.Minute}";
+
+                }
+            }
+            TimerText = $"{TodayDate.Hour}:{TodayDate.Minute}:{TodayDate.Second}";
+            AbsenceTimer = new System.Timers.Timer();
+            AbsenceTimer.Interval = 1000;
+            AbsenceTimer.Elapsed += Timer1_Elapsed;
+            AbsenceTimer.Start();
         }
-    }
-    TimerText = $"{TodayDate.Hour}:{TodayDate.Minute}:{TodayDate.Second}";
-    AbsenceTimer = new System.Timers.Timer();
-    AbsenceTimer.Interval = 1000;
-    AbsenceTimer.Elapsed += Timer1_Elapsed;
-    AbsenceTimer.Start();
+        catch (Exception e)
+        {
 
-}
+            throw e;
+        }
+
+
+    }
 }

@@ -13,7 +13,14 @@ a, .btn-link {
     background-color: #1b6ec2;
     border-color: #1861ac;
 }
-
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 app {
     position: relative;
     display: flex;

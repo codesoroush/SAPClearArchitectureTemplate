@@ -1,7 +1,7 @@
 ﻿@page "/todo"
 @inject ITodoService TodoService
 @inject IUserService UserService
-@inject IHttpContextAccessor httpContextAccessor
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @using BussinessLayer.Entities
 @using BussinessLayer.ExtentionMethods
 @attribute [Authorize]
@@ -15,7 +15,7 @@
 <SAPAlertBox @ref="Alert1"
              AlertBoxSize="SAPAlertBoxSize.Small"
              SAPAlertType="@SAPAlertType.None"
-             AnimationType="@AnimateBook.ZoomEntrances.ZoomIn.Fast()"
+             AnimationType="@AnimateBook.ZoomEntrances.ZoomIn.Faster()"
              FooterText="@todoItem.LastModified.ToSAPFormat()"
              Title="@todoItem.Title">
     <div class="text-left">
@@ -41,7 +41,21 @@
             <input class="form-control" type="date" @bind="todoItem.DueDate" />
             <small class="text-muted"> Today date is : @DateTime.Now.ToString("yyyy-MM-dd")</small>
         </div>
+        <div class="form-group">
+            <label>
+                Category:
+            </label>
+            <select @bind="@todoItem.TodoItemCategoryId" class="form-control">
+          
+                @foreach (var item in Categories)
+                {
+                <option value="@item.Id" style="color:@item.ColorCode">
+                    @item.Name
+                </option>
 
+                }
+            </select>
+        </div>
         <div class="form-group">
             <label>
                 Piority:
@@ -49,7 +63,7 @@
             <select @bind="@todoItem.Priority" class="form-control">
                 @foreach (var item in Enum.GetValues(typeof(BussinessLayer.Enums.PriorityLevel)))
                 {
-                    <option>@item</option>
+                <option>@item</option>
                 }
             </select>
         </div>
@@ -75,6 +89,7 @@
 
 
     <div class="form-group text-left">
+
 
         <input class="form-control" type="color" @bind="todoList.Color" />
 
@@ -120,8 +135,12 @@
 
     <div class="form-group text-left">
 
-        <input class="form-control" type="color" @bind="todoList.Color" />
-
+        <select class="form-control" @onchange="(e) => SetCategoryInTodo(e.Value)">
+            @foreach (var cat in Categories)
+            {
+                <option style="color:@cat.ColorCode" value="@cat.Id">@cat.Name</option>
+            }
+        </select>
     </div>
 
     <button @onclick="AddTodo" class="btn btn-primary btn-block">
@@ -199,39 +218,44 @@ else
                 {
                     var doneTaskClass = todo.Done ? "done-task" : "";
 
-                    <li class="list-group-item">
-                        <button @onclick="() => ShowDetail(todo)" class="btn btn-default float-right">
-                            <i class="oi oi-ellipses"></i>
+                <li class="list-group-item">
+                    <button @onclick="() => ShowDetail(todo)" class="btn btn-default float-right">
+                        <i class="oi oi-ellipses"></i>
 
-                        </button>
+                    </button>
 
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" @bind="todo.Done">
-                            <label @onclick="() => todo.Done = !todo.Done" class="custom-control-label @doneTaskClass">@todo.Title</label>
-                        </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" @bind="todo.Done">
+                        <label @onclick="() => ChaneDoneStatus(todo)" class="custom-control-label unselectable @doneTaskClass">@todo.Title</label>
+                    </div>
+                    @if (todo.TodoItemCategory is { })
+                    {
+                        <span class="badge " style="color:@SAPGenerator.TextColorDecider(todo.TodoItemCategory.ColorCode);background-color:@todo.TodoItemCategory.ColorCode">@todo.TodoItemCategory.Name</span>
 
-                        @*<   <div class="form-group" style="display:flex;">
-                            div>
-                                <input type="checkbox" style="margin:auto 5px;" value="@todo.Done" checked="@todo.Done" @onchange="(e) => CheckBoxChange(e,todo)" />
+                    }
 
-                            </div>*@
-                        @*@if (todo.Focoused)
-                                    {
-                                        <input value="@todo.Title" @onfocusout="() => todo.Focoused = false" class="form-control" @onchange="(e) => InputChange(e,todo)" />
+                    @*<   <div class="form-group" style="display:flex;">
+        div>
+            <input type="checkbox" style="margin:auto 5px;" value="@todo.Done" checked="@todo.Done" @onchange="(e) => CheckBoxChange(e,todo)" />
 
-                                    }
-                                    else
-                                    {
+        </div>*@
+                    @*@if (todo.Focoused)
+                {
+                    <input value="@todo.Title" @onfocusout="() => todo.Focoused = false" class="form-control" @onchange="(e) => InputChange(e,todo)" />
 
-                                        var txtDecoration = todo.Done ? "#2fc5a3" : "black";
-                                        <div style="color:@txtDecoration" @onclick="() => todo.Focoused = true">@todo.Title</div>
+                }
+                else
+                {
+
+                    var txtDecoration = todo.Done ? "#2fc5a3" : "black";
+                    <div style="color:@txtDecoration" @onclick="() => todo.Focoused = true">@todo.Title</div>
 
 
-                                    }
+                }
 
-                            </div>*@
+        </div>*@
 
-                    </li>
+                </li>
                 }
                 <li class="list-group-item">
                     <button @onclick="ShowTodoItemCreator" class="btn btn-primary">
@@ -249,7 +273,7 @@ else
 
 @code {
     public SAPToastArea ToastArea;
-
+    public TodoItemCategory Category;
     public SAPAlertBox Alert1;
     public SAPAlertBox Alert2;
     public SAPAlertBox Alert3;
@@ -261,10 +285,16 @@ else
     string userId = "";
     List<TodoList> todoes = new List<TodoList>();
     List<ApplicationUser> otherUsers = new List<ApplicationUser>();
-
+    public List<TodoItemCategory> Categories { get; set; } = new List<TodoItemCategory>();
     private TodoList todoList = new TodoList() { };
     private TodoItem todoItem = new TodoItem();
     private TodoList selectedTodo;
+
+    void ChaneDoneStatus(TodoItem item)
+    {
+        item.Done = !item.Done;
+        UpdateSubTask(item);
+    }
 
     void DeleteTask()
     {
@@ -277,8 +307,7 @@ else
 {
     AlertType = SAPAlertType.Info,
     Title = "Todo Deleted",
-    AutoCloseDelay = TimeSpan.FromSeconds(3),
-    ShowProgressbar = true
+    AutoCloseDelay = TimeSpan.FromSeconds(3)
 });
     }
     void UpdateSubTask(TodoItem item)
@@ -292,8 +321,7 @@ else
 {
     AlertType = SAPAlertType.Success,
     Title = "Todo Updated",
-    AutoCloseDelay = TimeSpan.FromSeconds(3),
-    ShowProgressbar = true
+    AutoCloseDelay = TimeSpan.FromSeconds(3)
 });
 
     }
@@ -311,8 +339,7 @@ else
  {
      AlertType = SAPAlertType.Info,
      Title = "SubTodo Deleted",
-     AutoCloseDelay = TimeSpan.FromSeconds(3),
-     ShowProgressbar = true
+     AutoCloseDelay = TimeSpan.FromSeconds(3)
  });
     }
 
@@ -379,9 +406,17 @@ else
                 AlertType = SAPAlertType.Success,
                 Title = "Todo assigned",
                 AutoCloseDelay = TimeSpan.FromSeconds(3),
-                ShowProgressbar = true
+                ShowProgressbar = false
             });
     }
+
+    void SetCategoryInTodo(object categoryId)
+    {
+        var catId = Convert.ToInt32(categoryId);
+        Category = Categories.FirstOrDefault(f => f.Id == catId);
+        StateHasChanged();
+    }
+
     void AddTodo()
     {
         if (string.IsNullOrEmpty(TodoItemTitle))
@@ -390,8 +425,13 @@ else
             ErrorText = "Todo item can not be empty";
             return;
         }
-
-        selectedTodo.TodoItems.Add(new TodoItem { Title = TodoItemTitle });
+        var todoItem = new TodoItem { Title = TodoItemTitle };
+        if (Category is { })
+        {
+            todoItem.TodoItemCategoryId = Category.Id;
+            todoItem.TodoItemCategory = Category;
+        }
+        selectedTodo.TodoItems.Add(todoItem);
         Alert4.HideAlert();
         ToastArea.CreateToast(
             new SAPToast
@@ -399,18 +439,14 @@ else
                 Title = "Todo item has been created"
             ,
                 AlertType = SAPAlertType.Success,
-                ShowProgressbar = true,
+                ShowProgressbar = false,
                 AutoCloseDelay = TimeSpan.FromSeconds(2)
             }); ;
-    }
-    //void KeyUp(KeyboardEventArgs e)
-    //{
-    //    if (e.Key == "Enter")
-    //    {
-    //    TodoService.Update(selectedTodo);
 
-    //    }
-    //}
+        TodoService.Update(selectedTodo);
+
+    }
+
 
     void ShowTodoItemCreator()
     {
@@ -446,7 +482,7 @@ else
          AlertType = SAPAlertType.Success,
          Title = "Todo created",
          AutoCloseDelay = TimeSpan.FromSeconds(3),
-         ShowProgressbar = true
+         ShowProgressbar = false
      });
         }
 
@@ -455,22 +491,43 @@ else
     protected override async Task OnInitializedAsync()
     {
 
-        userId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        var todoesResult = TodoService.GetAllTodoes(userId);
-        todoes = new List<TodoList>();
-        if (todoes is { })
+        try
         {
-            todoes.AddRange(todoesResult);
 
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            userId =  (await UserService.FindUserByUserName(authState.User.Identity.Name)).Id;
+
+            var cats =  await TodoService.GetCategories();
+
+            if (cats is { })
+            {
+                Categories.AddRange(cats);
+            }
+
+            var todoesResult = TodoService.GetAllTodoes(userId);
+            todoes = new List<TodoList>();
+            if (todoes is { })
+            {
+                todoes.AddRange(todoesResult);
+
+            }
+
+            var userResult = await UserService.GetOtherUsers(userId);
+            otherUsers = new List<ApplicationUser>();
+
+            if (userResult is { })
+            {
+                otherUsers.AddRange(userResult);
+            }
+            AssignUserId = otherUsers.FirstOrDefault()?.Id;
         }
-        var userResult = await UserService.GetOtherUsers(userId);
-        otherUsers = new List<ApplicationUser>();
-
-        if (userResult is { })
+        catch (Exception e)
         {
-            otherUsers.AddRange(userResult);
+
+            throw e;
         }
-        AssignUserId = otherUsers.FirstOrDefault()?.Id;
+
+
 
 
 

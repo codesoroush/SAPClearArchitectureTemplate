@@ -9,5 +9,7 @@ namespace ServiceLayer.Services
     public interface IUserService
     {
         Task<List<ApplicationUser>> GetOtherUsers(string userId);
+        Task<ApplicationUser> FindUserByUserName(string userName);
+
     }
 }

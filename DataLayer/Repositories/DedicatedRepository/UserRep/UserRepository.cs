@@ -1,9 +1,11 @@
 ﻿using BussinessLayer.Entities;
 using DataLayer.Context;
 using DataLayer.Repositories.GenericRepository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DataLayer.Repositories.DedicatedRepository.UserRep
 {
@@ -14,6 +16,11 @@ namespace DataLayer.Repositories.DedicatedRepository.UserRep
         public UserRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
+        }
+
+        public async Task<ApplicationUser> GetUserByUserName(string userName)
+        {
+            return await _context.Users.FirstOrDefaultAsync(f => f.UserName == userName);
         }
     }
 }

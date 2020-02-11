@@ -1,6 +1,7 @@
 ﻿using BussinessLayer.Entities;
 using DataLayer.Context;
 using DataLayer.Repositories.GenericRepository;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,9 @@ namespace DataLayer.Repositories.DedicatedRepository.Todo
             _context = context;
         }
 
-        public List<TodoItem> GetUndoneTodoItemInTomorrow()
+        public List<TodoItem> GetUndoneTodoItemInTomorrow(string userId)
         {
-            var result = _context.TodoItem.Where(w => w.DueDate.Value.Date == DateTime.Now.AddDays(1).Date && !w.Done);
+            var result = _context.TodoItem.Include( i => i.TodoItemCategory).Where(w => w.TodoList.ApplicationUserId == userId && !w.Done);
             return result.ToList();
         }
     }

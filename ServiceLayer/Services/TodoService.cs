@@ -31,6 +31,12 @@ namespace ServiceLayer.Services
             return result;
         }
 
+        public async void DeleteCategory(TodoItemCategory category)
+        {
+            _uow.TodoItemCategoryGate.Delete(category);
+            await _uow.CommitAsync();
+        }
+
         public void DeleteTask(TodoList todo)
         {
             _uow.TodoList.Delete(todo);
@@ -60,15 +66,15 @@ namespace ServiceLayer.Services
             return (await _uow.TodoItemCategoryGate.GetAll()).ToList();
         }
 
-        public List<TodoItem> GetUndoneTodoItemInTomorrow()
+        public List<TodoItem> GetUndoneTodoItemInTomorrow(string userId)
         {
-            List<TodoItem> todoes = _uow.TodoItem.GetUndoneTodoItemInTomorrow();
+            List<TodoItem> todoes = _uow.TodoItem.GetUndoneTodoItemInTomorrow(userId);
             return todoes;
         }
 
         public async Task Update(TodoList todo)
         {
-          
+
          
              _uow.TodoList.Update(todo);
              await _uow.CommitAsync();

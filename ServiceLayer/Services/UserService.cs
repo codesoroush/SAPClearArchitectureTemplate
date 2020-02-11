@@ -17,6 +17,13 @@ namespace ServiceLayer.Services
         {
             _uow = uow as UnitOfWork;
         }
+
+        public async Task<ApplicationUser> FindUserByUserName(string userName)
+        {
+            var user = await _uow.User.GetUserByUserName(userName);
+            return user;
+        }
+
         public async Task<List<ApplicationUser>> GetOtherUsers(string userId)
         {
             List<ApplicationUser> users = (await _uow.User.GetAll()).Where(w => w.Id != userId).ToList();

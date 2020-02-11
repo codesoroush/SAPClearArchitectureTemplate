@@ -21,7 +21,6 @@ namespace DataLayer.Repositories.DedicatedRepository.Todo
         public List<TodoList> GetAllWithTodoesChilds(string userId)
         {
             var result =  _context.TodoList.Include(i => i.TodoItems).Where(w => w.ApplicationUserId == userId);
-
             return result.ToList();
         
         
@@ -33,8 +32,8 @@ namespace DataLayer.Repositories.DedicatedRepository.Todo
             
 
             var minDate = DateTime.Now.AddDays(dayCount * -1);
-            var result = _context.TodoItem.Where(w => w.TodoList.ApplicationUserId  == userId && w.DoneDate.Value >= minDate && w.DoneDate <= DateTime.Now);
-
+            //var result = _context.TodoItem.Where(w => w.TodoList.ApplicationUserId  == userId && w.DoneDate.Value >= minDate && w.DoneDate <= DateTime.Now);
+            var result = _context.TodoList.Include(i => i.TodoItems).Where(w => w.ApplicationUserId == userId).SelectMany(s => s.TodoItems).Where(w => w.DoneDate.Value >= minDate && w.DoneDate <= DateTime.Now);
             return result.ToList();
 
 
