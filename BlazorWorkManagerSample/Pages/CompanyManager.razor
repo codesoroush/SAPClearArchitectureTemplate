@@ -1,0 +1,28 @@
+﻿@page "/Company"
+@using PageBackend
+@inherits CompanyPageBack
+
+@if (IsInCompany)
+{
+    <p>You Are in @CurrentUser.Company.Name Company .</p>
+    <p>Company ID :  @CurrentUser.Company.CompanyUserName  </p>
+
+    <hr />
+
+
+}
+else
+{
+    <p> You Are Not In Any Company , Join Or Create an company .</p>
+    <hr />
+    <input class="form-control" @bind="@Company.Name" />
+    <input type="time" class="form-control" @bind="@Company.StartWorkTime" />
+    <input type="time" class="form-control" @bind="@Company.EndWorkTime" />
+    <button @onclick="CreateCompany">Create Company</button>
+
+
+}
+
+
+
+

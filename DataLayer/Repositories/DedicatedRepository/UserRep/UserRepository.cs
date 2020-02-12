@@ -20,7 +20,7 @@ namespace DataLayer.Repositories.DedicatedRepository.UserRep
 
         public async Task<ApplicationUser> GetUserByUserName(string userName)
         {
-            return await _context.Users.FirstOrDefaultAsync(f => f.UserName == userName);
+            return await _context.Users.Include( i => i.Company).FirstOrDefaultAsync(f => f.UserName == userName);
         }
     }
 }

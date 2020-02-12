@@ -13,5 +13,10 @@ namespace BussinessLayer.Entities
         public string Name { get; set; }
         [StringLength(12)]
         public string ColorCode { get; set; } = SAPGenerator.GenerateHexColorCode;
+
+        #region company
+        public int? CompanyId { get; set; }
+        public Company Company { get; set; }
+        #endregion
     }
 }

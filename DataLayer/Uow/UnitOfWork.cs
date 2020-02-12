@@ -1,6 +1,7 @@
 ﻿using BussinessLayer.Entities;
 using DataLayer.Context;
 using DataLayer.Repositories.DedicatedRepository.AbsenceRep;
+using DataLayer.Repositories.DedicatedRepository.CompanyRep;
 using DataLayer.Repositories.DedicatedRepository.Todo;
 using DataLayer.Repositories.DedicatedRepository.UserRep;
 using System;
@@ -17,6 +18,7 @@ namespace DataLayer.Uow
         public AbsenceRepository AbsenceGate { get; }
         public TodoCategoryRepository TodoItemCategoryGate { get; }
         public UserRepository User { get; }
+        public CompanyRepository CompanyGate { get; }
         public TodoItemRepository TodoItem { get; }
 
         public UnitOfWork(ApplicationDbContext context)
@@ -27,6 +29,7 @@ namespace DataLayer.Uow
             AbsenceGate = new AbsenceRepository(context);
             TodoItemCategoryGate = new TodoCategoryRepository(context);
             User = new UserRepository(context);
+            CompanyGate = new CompanyRepository(context);
 
 
         }
@@ -39,7 +42,7 @@ namespace DataLayer.Uow
 
         public async Task CommitAsync()
         {
-            var resutlt = await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
         public void Dispose()
